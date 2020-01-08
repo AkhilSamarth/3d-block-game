@@ -15,3 +15,9 @@ public:
 	void addShader(std::string path, GLenum type);	// adds the shader whose src code is at the given path and checks for erorrs
 	void linkProgram();		// links the program after all shaders have been added and checks for errors
 };
+
+// standard vertex for use with VBOs
+struct Vertex{
+	float pos[3];		// position of vertex
+	float texturePos[2];	// texture coordinates
+};

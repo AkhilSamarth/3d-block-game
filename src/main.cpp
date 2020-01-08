@@ -36,19 +36,19 @@ int main(void)
 	glGenBuffers(1, &vboId);
 	glBindBuffer(GL_ARRAY_BUFFER, vboId);
 
-	float data[] = {
-		0, 0.5, 0, 1, 0, 0,
-		-0.5, -0.5, 0, 0, 1, 0,
-		0.5, -0.5, 0, 0, 0, 1
+	Vertex data[] = {
+		0, 0.5, 0, 1, 0,
+		-0.5, -0.5, 0, 0, 1,
+		0.5, -0.5, 0, 0, 0
 	};
 
 	// add data to buffer
 	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
 
 	// vertex attributes
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	/* Loop until the user closes the window */
