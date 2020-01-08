@@ -27,8 +27,8 @@ int main(void)
 
 	// create shader program
 	Shader shader;
-	shader.addShader("src/shader_vertex.glsl", GL_VERTEX_SHADER);
-	shader.addShader("src/shader_fragment.glsl", GL_FRAGMENT_SHADER);
+	shader.addShader("shader_vertex.glsl", GL_VERTEX_SHADER);
+	shader.addShader("shader_fragment.glsl", GL_FRAGMENT_SHADER);
 	shader.linkProgram();
 
 	// create vbo for triangle
