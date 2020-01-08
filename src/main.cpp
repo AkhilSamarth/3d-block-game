@@ -1,6 +1,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "drawing.h"
+
 int main(void)
 {
 	GLFWwindow* window;
@@ -22,6 +24,12 @@ int main(void)
 
 	// initalize glew
 	glewInit();
+
+	// create shader program
+	Shader shader;
+	shader.addShader("src/shader_vertex.glsl", GL_VERTEX_SHADER);
+	shader.addShader("src/shader_fragment.glsl", GL_FRAGMENT_SHADER);
+	shader.linkProgram();
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
