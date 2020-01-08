@@ -1,5 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "drawing.h"
 #include "block.h"
@@ -36,14 +38,26 @@ int main(void)
 	unsigned char* dummyData = {};
 	Block block(0, 0, 0, dummyData);
 
+	// get transformation matrices
+	glm::mat4 model = block.getModelMatrix();
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 10.0f);
+	glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0, 0, -5));
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// draw
-		glUseProgram(shader.getProgramId());
+		glUseProgram(shader.getProgramId());	// activate shader
+
+		// pass transformation matrix to shader
+		glm::mat4 transform = projection * view * model;
+		unsigned int transformLoc = glGetUniformLocation(shader.getProgramId(), "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+		// bind VAO and draw
 		block.bindVao();
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
