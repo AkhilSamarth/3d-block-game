@@ -69,11 +69,11 @@ void Block::initVao() {
 		// left
 		-0.5, 0.5, 0.5,			1, 1,
 		-0.5, 0.5, -0.5,		-1, 1,
-		-0.5, -0.5, -0.5,		-1, -1
+		-0.5, -0.5, -0.5,		-1, -1,
 
 		-0.5, 0.5, 0.5, 		1, 1,
-		-0.5, -0.5, -0.5,		-1, -1
-		-0.5, -0.5, 0.5,		1, -1,
+		-0.5, -0.5, -0.5,		-1, -1,
+		-0.5, -0.5, 0.5,		1, -1
 	};
 
 	// fill buffer
@@ -82,7 +82,7 @@ void Block::initVao() {
 	// vertex attributes
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) 0);	// position
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) (3 * sizeof(float)));	// texture coordinates
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) (3 * sizeof(float)));	// texture coordinates
 	glEnableVertexAttribArray(1);
 
 	vaoInit = true;

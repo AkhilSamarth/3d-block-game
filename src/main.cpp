@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "drawing.h"
+#include "block.h"
 
 int main(void)
 {
@@ -31,25 +32,9 @@ int main(void)
 	shader.addShader("assetts/shaders/shader_fragment.glsl", GL_FRAGMENT_SHADER);
 	shader.linkProgram();
 
-	// create vbo for triangle
-	unsigned int vboId;
-	glGenBuffers(1, &vboId);
-	glBindBuffer(GL_ARRAY_BUFFER, vboId);
-
-	Vertex data[] = {
-		0, 0.5, 0, 1, 0,
-		-0.5, -0.5, 0, 0, 1,
-		0.5, -0.5, 0, 0, 0
-	};
-
-	// add data to buffer
-	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
-
-	// vertex attributes
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	// test block
+	unsigned char* dummyData = {};
+	Block block(0, 0, 0, dummyData);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -59,7 +44,8 @@ int main(void)
 
 		// draw
 		glUseProgram(shader.getProgramId());
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		block.bindVao();
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
