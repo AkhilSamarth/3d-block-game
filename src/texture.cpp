@@ -14,9 +14,16 @@ unsigned int getTextureId(std::string name) {
 	return textureMap[name];
 }
 
-void bindTexture(std::string name) {
+void bindTexture(std::string name, unsigned int shaderId) {
 	// get the texture id
 	unsigned int textureId = getTextureId(name);
+
+	// activate texture unit and bind texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+
+	// get uniform
+	glUniform1i(glGetUniformLocation(shaderId, "texture"), 0);
 }
 
 void loadTexture(std::string path, std::string name) {

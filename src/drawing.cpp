@@ -94,7 +94,7 @@ void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& vie
 
 		// bind VAO, texture and draw
 		blocks[i].bindVao();
-		bindTexture(blocks[i].getTextureName());
+		bindTexture(blocks[i].getTextureName(), shaderId);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 }

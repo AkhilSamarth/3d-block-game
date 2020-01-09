@@ -6,6 +6,7 @@
 
 #include "drawing.h"
 #include "block.h"
+#include "texture.h"
 
 int main(void)
 {
@@ -29,6 +30,9 @@ int main(void)
 	// initalize glew
 	glewInit();
 
+	// load textures
+	loadTexture("assetts/textures/test.png", "test");
+
 	// create shader program
 	Shader shader;
 	shader.addShader("assetts/shaders/shader_vertex.glsl", GL_VERTEX_SHADER);
@@ -37,8 +41,7 @@ int main(void)
 
 	// test block
 	Block blocks[] = {
-		Block(0, 0, 0, "dummy"),
-		Block(1, 0, 0, "dummy"),
+		Block(0, 0, 0, "test"),
 	};
 
 	// get transformation matrices
@@ -52,7 +55,7 @@ int main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		drawBlocks(blocks, 2, shader.getProgramId(), view, projection);
+		drawBlocks(blocks, 1, shader.getProgramId(), view, projection);
 		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
