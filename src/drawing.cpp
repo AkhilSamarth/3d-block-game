@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include <GL/glew.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "drawing.h"
 
@@ -77,4 +78,21 @@ void Shader::linkProgram() {
 	}
 
 	progInit = true;
+}
+
+void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& view, glm::mat4& projection) {
+	glUseProgram(shaderId);	// activate shader
+	glm::mat4 pv = projection * view;	// precompute pv matrix
+	
+	// loop through blocks
+	for (int i = 0; i < length; i++) {
+		// pass transformation matrix to shader
+		glm::mat4 transform = pv * blocks[i].getModelMatrix();
+		unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+		// bind VAO and draw
+		blocks[i].bindVao();
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
 }

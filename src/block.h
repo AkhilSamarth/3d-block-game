@@ -2,8 +2,6 @@
 
 #include <glm/glm.hpp>
 
-#include "drawing.h"
-
 class Block {
 private:
 	unsigned char* texture;	// pointer to texture data

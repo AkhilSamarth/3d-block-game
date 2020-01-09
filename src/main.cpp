@@ -50,17 +50,8 @@ int main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(shader.getProgramId());	// activate shader
-
-		// pass transformation matrix to shader
-		glm::mat4 transform = projection * view * model;
-		unsigned int transformLoc = glGetUniformLocation(shader.getProgramId(), "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
-		// bind VAO and draw
-		block.bindVao();
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
+		drawBlocks(&block, 1, shader.getProgramId(), view, projection);
+		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 

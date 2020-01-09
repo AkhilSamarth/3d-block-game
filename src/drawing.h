@@ -3,6 +3,9 @@
 #include <string>
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+
+#include "block.h"
 
 // class for shader program
 class Shader {
@@ -12,7 +15,7 @@ private:
 public:
 	Shader();
 	unsigned int getProgramId();		// returns the program id if it exists, otherwise prints error message
-	void addShader(std::string path, GLenum type);	// adds the shader whose src code is at the given path and checks for erorrs
+	void addShader(const std::string path, const GLenum type);	// adds the shader whose src code is at the given path and checks for erorrs
 	void linkProgram();		// links the program after all shaders have been added and checks for errors
 };
 
@@ -21,3 +24,6 @@ struct Vertex{
 	float pos[3];		// position of vertex
 	float texturePos[2];	// texture coordinates
 };
+
+// general function to draw blocks
+void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& view, glm::mat4& projection);

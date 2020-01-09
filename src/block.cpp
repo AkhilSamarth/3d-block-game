@@ -1,7 +1,9 @@
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "block.h"
+#include "drawing.h"
 
 // initalize static members
 unsigned int Block::vaoId = 0;
