@@ -1,3 +1,4 @@
+#include <iostream>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -90,13 +91,13 @@ void Block::initVao() {
 	vaoInit = true;
 }
 
-Block::Block(int x, int y, int z, unsigned char* texture) : texture(texture) {
+Block::Block(int x, int y, int z, std::string textureName) : textureName(textureName) {
 	pos = glm::vec3(x, y, z);
 }
 
 glm::mat4 Block::getModelMatrix() {
 	glm::mat4 matrix = glm::mat4(1.0f);		// identity matrix
-	glm::translate(matrix, glm::vec3(pos));		// translate to correct position
+	matrix = glm::translate(matrix, glm::vec3(pos));		// translate to correct position
 
 	return matrix;
 }
@@ -112,4 +113,17 @@ void Block::bindVao() {
 	}
 
 	glBindVertexArray(vaoId);
+}
+
+void Block::addTexture(std::string name, unsigned char* data) {
+	textureMap[name] = data;
+}
+
+unsigned char* Block::getTexture(std::string name) {
+	if (textureMap.find(name) == textureMap.end()) {
+		std::cerr << "Texture not found." << std::endl;
+		return nullptr;
+	}
+
+	return textureMap[name];
 }

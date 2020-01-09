@@ -91,8 +91,9 @@ void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& vie
 		unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-		// bind VAO and draw
+		// bind VAO, texture and draw
 		blocks[i].bindVao();
+		blocks[i].bindTexture();
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 }

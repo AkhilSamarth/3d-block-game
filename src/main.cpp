@@ -35,11 +35,12 @@ int main(void)
 	shader.linkProgram();
 
 	// test block
-	unsigned char* dummyData = {};
-	Block block(0, 0, 0, dummyData);
+	Block blocks[] = {
+		Block(0, 0, 0, "dummy"),
+		Block(1, 0, 0, "dummy"),
+	};
 
 	// get transformation matrices
-	glm::mat4 model = block.getModelMatrix();
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 10.0f);
 	glm::mat4 view = glm::mat4(1.0f);
 	view = glm::translate(view, glm::vec3(0, 0, -5));
@@ -50,7 +51,7 @@ int main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		drawBlocks(&block, 1, shader.getProgramId(), view, projection);
+		drawBlocks(blocks, 2, shader.getProgramId(), view, projection);
 		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
