@@ -30,6 +30,9 @@ int main(void)
 	// initalize glew
 	glewInit();
 
+	// enable depth testing
+	glEnable(GL_DEPTH_TEST);
+
 	// load textures
 	loadTexture("assetts/textures/test.png", "test");
 
@@ -53,7 +56,7 @@ int main(void)
 	while (!glfwWindowShouldClose(window))
 	{
 		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		drawBlocks(blocks, 1, shader.getProgramId(), view, projection);
 		

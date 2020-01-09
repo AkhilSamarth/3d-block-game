@@ -29,6 +29,7 @@ void bindTexture(std::string name, unsigned int shaderId) {
 void loadTexture(std::string path, std::string name) {
 	// load image
 	int width, height, channels;
+	stbi_set_flip_vertically_on_load(true);		// makes sure the image is the right way up
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
 	// generate texture
@@ -38,8 +39,12 @@ void loadTexture(std::string path, std::string name) {
 	// add id to map
 	textureMap[name] = textureId;
 
-	// bind texture and fill with data
+	// bind texture and set parameters
 	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// fill with data
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
