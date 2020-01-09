@@ -11,12 +11,11 @@ private:
 	static unsigned int vaoId;	// VAO for a single block (cube)
 	static bool vaoInit;	// whether or not the block VAO has been created
 
-
 	static void initVao();	// initalize the VAO
 public:
 	Block(int x, int y, int z, std::string textureName);		// position set to (x, y, z), textureName must match key in textureMap
 	glm::mat4 getModelMatrix();		// returns the model matrix with the correct block position
-	void bindTexture();		// binds this block's texture
+	std::string getTextureName();	// returns the name of the texture of this block
 
 	static void bindVao();		// binds the block VAO
 };

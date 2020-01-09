@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "drawing.h"
+#include "texture.h"
 
 
 Shader::Shader() : progInit(false) {
@@ -93,7 +94,7 @@ void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& vie
 
 		// bind VAO, texture and draw
 		blocks[i].bindVao();
-		blocks[i].bindTexture();
+		bindTexture(blocks[i].getTextureName());
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 }

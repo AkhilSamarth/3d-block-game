@@ -102,8 +102,8 @@ glm::mat4 Block::getModelMatrix() {
 	return matrix;
 }
 
-void Block::bindTexture() {
-	return;		// TODO: implement this
+std::string Block::getTextureName() {
+	return textureName;
 }
 
 void Block::bindVao() {
