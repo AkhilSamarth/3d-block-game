@@ -91,7 +91,7 @@ void Camera::setFov(float fov) {
 	}
 }
 
-glm::vec3 getPosition() {
+glm::vec3 Camera::getPosition() {
 	return pos;
 }
 
