@@ -74,7 +74,7 @@ int main(void)
 		// get camera matrix
 		glm::mat4 camMatrix = Camera::getActiveCam()->getMatrix();
 
-		drawBlocks(blocks, shader.getProgramId(), camMatrix);
+		drawUniformBlocks(blocks, shader.getProgramId(), camMatrix, "test");
 		
 		// update FPS timer if needed
 		if (showFPS) {

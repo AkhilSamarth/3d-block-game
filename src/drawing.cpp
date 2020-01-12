@@ -80,28 +80,57 @@ void Shader::linkProgram() {
 	progInit = true;
 }
 
+// draw the given vector of blocks
 void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& camMatrix) {
 	glUseProgram(shaderId);	// activate shader
 
+	// send camera matrix
+	unsigned int camLoc = glGetUniformLocation(shaderId, "camera");
+	glUniformMatrix4fv(camLoc, 1, GL_FALSE, glm::value_ptr(camMatrix));
+
+	// find model location
+	unsigned int modelLoc = glGetUniformLocation(shaderId, "model");
+
 	// bind block VAO
 	Block::bindVao();
-	
+
 	std::string prevTexture = "";
 	// loop through blocks
 	for (auto ptrBlock = blocks.begin(); ptrBlock != blocks.end(); ptrBlock++) {
-		// send camera matrix
-		unsigned int transformLoc = glGetUniformLocation(shaderId, "camera");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(camMatrix));
-
 		// send model matrix
-		transformLoc = glGetUniformLocation(shaderId, "model");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(ptrBlock->getModelMatrix()));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(ptrBlock->getModelMatrix()));
 
 		// bind texture if needed
 		if (prevTexture != ptrBlock->getTextureName()) {
 			bindTexture(ptrBlock->getTextureName(), shaderId);
 			prevTexture = ptrBlock->getTextureName();	// update prevTexture
 		}
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+}
+
+// draw blocks with the same texture
+void drawUniformBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& camMatrix, std::string texture) {
+	glUseProgram(shaderId);	// activate shader
+
+	// send camera matrix
+	unsigned int camLoc = glGetUniformLocation(shaderId, "camera");
+	glUniformMatrix4fv(camLoc, 1, GL_FALSE, glm::value_ptr(camMatrix));
+
+	// find model location
+	unsigned int modelLoc = glGetUniformLocation(shaderId, "model");
+
+	// bind block VAO
+	Block::bindVao();
+
+	// bind texture
+	bindTexture(texture, shaderId);
+
+	// loop through blocks
+	for (auto ptrBlock = blocks.begin(); ptrBlock != blocks.end(); ptrBlock++) {
+		// send model matrix
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(ptrBlock->getModelMatrix()));
+
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 }
