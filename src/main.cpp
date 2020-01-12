@@ -11,6 +11,8 @@
 #include "camera.h"
 #include "game.h"
 
+static const bool showFPS = true;	// whether or not to print the FPS
+
 int main(void)
 {
 	GLFWwindow* window;
@@ -33,8 +35,9 @@ int main(void)
 	// initalize glew
 	glewInit();
 
-	// enable depth testing
+	// enable depth testing and face culling
 	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_CULL_FACE);
 
 	// load textures
 	loadTexture("assetts/textures/test.png", "test");
@@ -47,8 +50,8 @@ int main(void)
 
 	// test blocks
 	std::vector<Block> blocks;
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
+	for (int i = 0; i < 100; i++) {
+		for (int j = 0; j < 100; j++) {
 			blocks.push_back(Block(i, 0, -j, "test"));
 		}
 	}
@@ -63,6 +66,7 @@ int main(void)
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
+		double lastTime = glfwGetTime();		// start timer
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -72,6 +76,11 @@ int main(void)
 
 		drawBlocks(blocks, shader.getProgramId(), camMatrix);
 		
+		// update FPS timer if needed
+		if (showFPS) {
+			printf("FPS: %f, 1/FPS: %f\n", 1.0f / ((glfwGetTime() - lastTime)), (glfwGetTime() - lastTime));
+		}
+
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
