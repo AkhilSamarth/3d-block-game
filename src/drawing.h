@@ -27,8 +27,5 @@ struct Vertex{
 	float texturePos[2];	// texture coordinates
 };
 
-// general function to draw blocks
-void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& cameraMatrix);
-
 // function to draw group of blocks with the same texture
-void drawUniformBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& camMatrix, std::string texture);
+void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& camMatrix, std::string texture);
