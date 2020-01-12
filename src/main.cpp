@@ -37,7 +37,7 @@ int main(void)
 
 	// enable depth testing and face culling
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 
 	// load textures
 	loadTexture("assetts/textures/test.png", "test");
@@ -50,8 +50,8 @@ int main(void)
 
 	// test blocks
 	std::vector<Block> blocks;
-	for (int i = 0; i < 100; i++) {
-		for (int j = 0; j < 100; j++) {
+	for (int i = 0; i < 1; i++) {
+		for (int j = 0; j < 1; j++) {
 			blocks.push_back(Block(i, 0, -j, "test"));
 		}
 	}

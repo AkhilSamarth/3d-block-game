@@ -28,7 +28,7 @@ void mouseCallback(GLFWwindow* window, double x, double y) {
 
 void processKeys(GLFWwindow* window) {
 	// how fast camera should move when a key is pressed
-	static const float camSpeed = 0.01;
+	static const float camSpeed = 0.05;
 
 	// process key presses
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
