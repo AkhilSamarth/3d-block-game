@@ -69,7 +69,7 @@ int main(void)
 
 	// test block
 	Block blocks[] = {
-		Block(1, 0, -2, "test"),
+		Block(0, 0, -3, "test"),
 	};
 
 	// create camera

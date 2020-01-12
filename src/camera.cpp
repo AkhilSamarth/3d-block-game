@@ -9,19 +9,8 @@ const float Camera::ASPECT_RATIO = 16.0f / 9.0f;
 Camera::Camera(glm::vec3 pos, float pitch, float yaw, float fov) : pos(pos), pitch(pitch), yaw(yaw), fov(fov) {}
 
 glm::mat4 Camera::getMatrix() {
-	glm::vec4 forward(0, 0, -1, 1);	// default forward vector
-
-	// transform forward using yaw
-	forward = glm::rotate(glm::mat4(1.0f), glm::radians(yaw), glm::vec3(0, 1, 0)) * forward;
-
-	// calculate right vector (axis of rotation for pitch)
-	glm::vec3 right = glm::cross(glm::vec3(forward.x, forward.y, forward.z), glm::vec3(0, 1, 0));
-
-	// transform forward using pitch
-	forward = glm::rotate(glm::mat4(1.0f), glm::radians(pitch), right) * forward;
-
 	// view matrix
-	glm::mat4 view = glm::lookAt(pos, pos + glm::vec3(forward.x, forward.y, forward.z) , glm::vec3(0, 1, 0));
+	glm::mat4 view = glm::lookAt(pos, pos + getForward(), glm::vec3(0, 1, 0));
 
 	// calculate vertical fov for GLM
 	// calculation done on paper, only the result is used here
@@ -93,6 +82,31 @@ void Camera::setFov(float fov) {
 
 glm::vec3 Camera::getPosition() {
 	return pos;
+}
+
+glm::vec3 Camera::getForward() {
+	glm::vec4 forward(0, 0, -1, 1);	// default forward vector
+
+	// transform forward using yaw
+	forward = glm::rotate(glm::mat4(1.0f), glm::radians(yaw), glm::vec3(0, 1, 0)) * forward;
+
+	// calculate right vector (axis of rotation for pitch)
+	glm::vec3 right = glm::cross(glm::vec3(forward.x, forward.y, forward.z), glm::vec3(0, 1, 0));
+
+	// transform forward using pitch
+	forward = glm::rotate(glm::mat4(1.0f), glm::radians(pitch), right) * forward;
+
+	return glm::normalize(glm::vec3(forward.x, forward.y, forward.z));		// convert to 3D and return
+}
+
+glm::vec3 Camera::getRight() {
+	// right is cross product of j-hat (y-axis unit vector) and forward
+	return glm::normalize(glm::cross(getForward(), glm::vec3(0, 1, 0)));
+}
+
+glm::vec3 Camera::getUp() {
+	// up is cross product of right and forward
+	return glm::normalize(glm::cross(getRight(), getForward()));
 }
 
 float Camera::getYaw() {

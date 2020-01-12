@@ -12,6 +12,7 @@ public:
 
 	Camera(glm::vec3 pos = glm::vec3(0, 0, 0), float pitch = 0.0f, float yaw = 0.0f, float fov = 90.0f);	// default camera is at position (0, 0, 0), facing towards -z, with 90 degree fov
 	glm::mat4 getMatrix();	// returns the combined view and projection matrices of this camera
+	
 	void translate(glm::vec3 translation);		// translate the camera by the given vector
 	void moveTo(glm::vec3 newPos);		// teleports the camera to newPos
 	void rotateYaw(float angle);	// add angle to the current yaw
@@ -22,6 +23,13 @@ public:
 	
 	// getters
 	glm::vec3 getPosition();
+
+	// calculate and return the forward, right, and up vectors (perpendicular to each other
+	// vectors are normalized
+	glm::vec3 getForward();
+	glm::vec3 getRight();
+	glm::vec3 getUp();
+
 	float getYaw();
 	float getPitch();
 	float getFov();
