@@ -13,15 +13,48 @@
 Camera* activeCam;
 
 void mouseCallback(GLFWwindow* window, double x, double y) {
-	
+	static const float sensitivity = 0.08;
+
+	// need to keep track of previous x and y to calculate deltas
+	static double lastX = x;
+	static double lastY = y;
+
+	// calculate deltas
+	double deltaX = x - lastX;
+	double deltaY = y - lastY;
+
+	// rotate camera
+	activeCam->rotateYaw(-deltaX * sensitivity);
+	activeCam->rotatePitch(-deltaY * sensitivity);
+
+	// update "last" vars
+	lastX = x;
+	lastY = y;
 }
 
 void processKeys(GLFWwindow* window) {
-	static const float camSpeed = 0.05;
+	// how fast camera should move when a key is pressed
+	static const float camSpeed = 0.01;
 
+	// process key presses
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		activeCam->translate(activeCam->getForward() * camSpeed);
 	}
-
+	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		activeCam->translate(activeCam->getForward() * -camSpeed);
+	}
+	else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		activeCam->translate(activeCam->getRight() * -camSpeed);
+	}
+	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		activeCam->translate(activeCam->getRight() * camSpeed);
+	}
+	else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+		activeCam->translate(activeCam->getUp() * camSpeed);
+	}
+	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+		activeCam->translate(activeCam->getUp() * -camSpeed);
+	}
 }
 
 // select which camera to display to the window
