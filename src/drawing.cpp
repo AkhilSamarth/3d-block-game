@@ -82,6 +82,9 @@ void Shader::linkProgram() {
 
 void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& camMatrix) {
 	glUseProgram(shaderId);	// activate shader
+
+	// bind block VAO
+	Block::bindVao();
 	
 	// loop through blocks
 	for (auto ptrBlock = blocks.begin(); ptrBlock != blocks.end(); ptrBlock++) {
@@ -90,8 +93,7 @@ void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& cam
 		unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-		// bind VAO, texture and draw
-		ptrBlock->bindVao();
+		// bind texture and draw
 		bindTexture(ptrBlock->getTextureName(), shaderId);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
