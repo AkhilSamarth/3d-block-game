@@ -86,6 +86,7 @@ void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& cam
 	// bind block VAO
 	Block::bindVao();
 	
+	std::string prevTexture = "";
 	// loop through blocks
 	for (auto ptrBlock = blocks.begin(); ptrBlock != blocks.end(); ptrBlock++) {
 		// pass transformation matrix to shader
@@ -93,8 +94,11 @@ void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& cam
 		unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-		// bind texture and draw
-		bindTexture(ptrBlock->getTextureName(), shaderId);
+		// bind texture if needed
+		if (prevTexture != ptrBlock->getTextureName()) {
+			bindTexture(ptrBlock->getTextureName(), shaderId);
+			prevTexture = ptrBlock->getTextureName();	// update prevTexture
+		}
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 }

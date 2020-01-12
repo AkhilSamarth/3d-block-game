@@ -50,8 +50,8 @@ int main(void)
 
 	// test blocks
 	std::vector<Block> blocks;
-	for (int i = 0; i < 1; i++) {
-		for (int j = 0; j < 1; j++) {
+	for (int i = 0; i < 100; i++) {
+		for (int j = 0; j < 100; j++) {
 			blocks.push_back(Block(i, 0, -j, "test"));
 		}
 	}
