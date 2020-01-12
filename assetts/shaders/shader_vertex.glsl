@@ -6,10 +6,11 @@ layout (location = 1) in vec2 texturePos;
 
 out vec2 texCoord;
 
-// matrix transformation
-uniform mat4 transform;
+// matrix transformations
+uniform mat4 camera;	// includes view and projection
+uniform mat4 model;
 
 void main() {
-	gl_Position = transform * vec4(pos, 1);
+	gl_Position = camera * model * vec4(pos, 1);
 	texCoord = texturePos;
 }

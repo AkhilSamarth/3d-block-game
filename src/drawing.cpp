@@ -89,10 +89,13 @@ void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& cam
 	std::string prevTexture = "";
 	// loop through blocks
 	for (auto ptrBlock = blocks.begin(); ptrBlock != blocks.end(); ptrBlock++) {
-		// pass transformation matrix to shader
-		glm::mat4 transform = camMatrix * ptrBlock->getModelMatrix();
-		unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+		// send camera matrix
+		unsigned int transformLoc = glGetUniformLocation(shaderId, "camera");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(camMatrix));
+
+		// send model matrix
+		transformLoc = glGetUniformLocation(shaderId, "model");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(ptrBlock->getModelMatrix()));
 
 		// bind texture if needed
 		if (prevTexture != ptrBlock->getTextureName()) {
