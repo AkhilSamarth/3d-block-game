@@ -21,6 +21,7 @@ public:
 	void setFov(float fov);		// set the horizontal fov
 	
 	// getters
+	glm::vec3 getPosition();
 	float getYaw();
 	float getPitch();
 	float getFov();

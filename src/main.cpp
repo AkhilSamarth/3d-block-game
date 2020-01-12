@@ -9,6 +9,26 @@
 #include "texture.h"
 #include "camera.h"
 
+// pointer to the camera that's currently being displayed
+Camera* activeCam;
+
+void mouseCallback(GLFWwindow* window, double x, double y) {
+	
+}
+
+void processKeys(GLFWwindow* window) {
+	static const float camSpeed = 0.05;
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+	}
+
+}
+
+// select which camera to display to the window
+void setActiveCamera(Camera* cam) {
+	activeCam = cam;
+}
+
 int main(void)
 {
 	GLFWwindow* window;
@@ -31,6 +51,10 @@ int main(void)
 	// initalize glew
 	glewInit();
 
+	// mouse input setup
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, mouseCallback);	// add mouse callback
+
 	// enable depth testing
 	glEnable(GL_DEPTH_TEST);
 
@@ -50,9 +74,7 @@ int main(void)
 
 	// create camera
 	Camera cam;
-	cam.translate(glm::vec3(1, 1, 0));
-	cam.rotatePitch(-45.0f);
-	cam.rotateYaw(-10.0f);
+	setActiveCamera(&cam);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -60,8 +82,11 @@ int main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// process input
+		processKeys(window);
+
 		// get camera matrix
-		glm::mat4 camMatrix = cam.getMatrix();
+		glm::mat4 camMatrix = activeCam->getMatrix();
 
 		drawBlocks(blocks, 1, shader.getProgramId(), camMatrix);
 		
