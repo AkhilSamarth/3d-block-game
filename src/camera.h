@@ -16,7 +16,12 @@ public:
 	void moveTo(glm::vec3 newPos);		// teleports the camera to newPos
 	void rotateYaw(float angle);	// add angle to the current yaw
 	void rotatePitch(float angle);	// add angle to the current pitch
-	void setYaw(float angle);		// set the yaw to the given angle (0 = towards negative z, default)
+	void setYaw(float angle);		// set the yaw to the given angle (0 = towards negative z, positive = counterclockwise)
 	void setPitch(float angle);		// set the pitch to the given angle (positive = up)
-	void setFOV(float fov);		// set the horizontal fov
+	void setFov(float fov);		// set the horizontal fov
+	
+	// getters
+	float getYaw();
+	float getPitch();
+	float getFov();
 };

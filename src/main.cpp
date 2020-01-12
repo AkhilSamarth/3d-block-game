@@ -50,6 +50,9 @@ int main(void)
 
 	// create camera
 	Camera cam;
+	cam.translate(glm::vec3(1, 1, 0));
+	cam.rotatePitch(-45.0f);
+	cam.rotateYaw(-10.0f);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))

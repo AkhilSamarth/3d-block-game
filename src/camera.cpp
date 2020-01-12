@@ -79,7 +79,7 @@ void Camera::setPitch(float angle) {
 	}
 }
 
-void Camera::setFOV(float fov) {
+void Camera::setFov(float fov) {
 	this->fov = fov;
 
 	// keep fov in range
@@ -89,4 +89,20 @@ void Camera::setFOV(float fov) {
 	else if (fov < 30) {
 		fov = 30.0f;
 	}
+}
+
+glm::vec3 getPosition() {
+	return pos;
+}
+
+float Camera::getYaw() {
+	return yaw;
+}
+
+float Camera::getPitch() {
+	return pitch;
+}
+
+float Camera::getFov() {
+	return fov;
 }
