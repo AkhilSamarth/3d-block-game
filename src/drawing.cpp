@@ -81,13 +81,13 @@ void Shader::linkProgram() {
 	progInit = true;
 }
 
-void drawBlocks(Block* blocks, int length, unsigned int shaderId, Camera& cam) {
+void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& camMatrix) {
 	glUseProgram(shaderId);	// activate shader
 	
 	// loop through blocks
 	for (int i = 0; i < length; i++) {
 		// pass transformation matrix to shader
-		glm::mat4 transform = cam.getMatrix() * blocks[i].getModelMatrix();
+		glm::mat4 transform = camMatrix * blocks[i].getModelMatrix();
 		unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 

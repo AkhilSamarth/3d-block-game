@@ -57,7 +57,10 @@ int main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		drawBlocks(blocks, 1, shader.getProgramId(), cam);
+		// get camera matrix
+		glm::mat4 camMatrix = cam.getMatrix();
+
+		drawBlocks(blocks, 1, shader.getProgramId(), camMatrix);
 		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

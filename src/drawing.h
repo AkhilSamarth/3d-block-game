@@ -27,4 +27,4 @@ struct Vertex{
 };
 
 // general function to draw blocks
-void drawBlocks(Block* blocks, int length, unsigned int shaderId, Camera& camera);
+void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& cameraMatrix);
