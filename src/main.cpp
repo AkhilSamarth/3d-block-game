@@ -40,19 +40,19 @@ void processKeys(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		activeCam->translate(activeCam->getForward() * camSpeed);
 	}
-	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 		activeCam->translate(activeCam->getForward() * -camSpeed);
 	}
-	else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		activeCam->translate(activeCam->getRight() * -camSpeed);
 	}
-	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		activeCam->translate(activeCam->getRight() * camSpeed);
 	}
-	else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		activeCam->translate(activeCam->getUp() * camSpeed);
 	}
-	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		activeCam->translate(activeCam->getUp() * -camSpeed);
 	}
 }
@@ -102,7 +102,11 @@ int main(void)
 
 	// test blocks
 	std::vector<Block> blocks;
-	blocks.push_back(Block(0, 0, -3, "test"));
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			blocks.push_back(Block(i, 0, -j, "test"));
+		}
+	}
 
 	// create camera
 	Camera cam;
