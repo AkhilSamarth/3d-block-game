@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "block.h"
+#include "camera.h"
 
 // class for shader program
 class Shader {
@@ -26,4 +27,4 @@ struct Vertex{
 };
 
 // general function to draw blocks
-void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& view, glm::mat4& projection);
+void drawBlocks(Block* blocks, int length, unsigned int shaderId, Camera& camera);

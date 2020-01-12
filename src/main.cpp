@@ -7,6 +7,7 @@
 #include "drawing.h"
 #include "block.h"
 #include "texture.h"
+#include "camera.h"
 
 int main(void)
 {
@@ -44,13 +45,11 @@ int main(void)
 
 	// test block
 	Block blocks[] = {
-		Block(0, 0, 0, "test"),
+		Block(1, 0, -2, "test"),
 	};
 
-	// get transformation matrices
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 10.0f);
-	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0, 0, -5));
+	// create camera
+	Camera cam;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -58,7 +57,7 @@ int main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		drawBlocks(blocks, 1, shader.getProgramId(), view, projection);
+		drawBlocks(blocks, 1, shader.getProgramId(), cam);
 		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
