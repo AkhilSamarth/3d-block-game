@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -27,4 +28,4 @@ struct Vertex{
 };
 
 // general function to draw blocks
-void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& cameraMatrix);
+void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& cameraMatrix);

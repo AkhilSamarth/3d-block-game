@@ -1,4 +1,3 @@
-#include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -81,19 +80,19 @@ void Shader::linkProgram() {
 	progInit = true;
 }
 
-void drawBlocks(Block* blocks, int length, unsigned int shaderId, glm::mat4& camMatrix) {
+void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& camMatrix) {
 	glUseProgram(shaderId);	// activate shader
 	
 	// loop through blocks
-	for (int i = 0; i < length; i++) {
+	for (auto ptrBlock = blocks.begin(); ptrBlock != blocks.end(); ptrBlock++) {
 		// pass transformation matrix to shader
-		glm::mat4 transform = camMatrix * blocks[i].getModelMatrix();
+		glm::mat4 transform = camMatrix * ptrBlock->getModelMatrix();
 		unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
 		// bind VAO, texture and draw
-		blocks[i].bindVao();
-		bindTexture(blocks[i].getTextureName(), shaderId);
+		ptrBlock->bindVao();
+		bindTexture(ptrBlock->getTextureName(), shaderId);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 }

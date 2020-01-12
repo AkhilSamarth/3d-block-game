@@ -100,10 +100,9 @@ int main(void)
 	shader.addShader("assetts/shaders/shader_fragment.glsl", GL_FRAGMENT_SHADER);
 	shader.linkProgram();
 
-	// test block
-	Block blocks[] = {
-		Block(0, 0, -3, "test"),
-	};
+	// test blocks
+	std::vector<Block> blocks;
+	blocks.push_back(Block(0, 0, -3, "test"));
 
 	// create camera
 	Camera cam;
@@ -121,7 +120,7 @@ int main(void)
 		// get camera matrix
 		glm::mat4 camMatrix = activeCam->getMatrix();
 
-		drawBlocks(blocks, 1, shader.getProgramId(), camMatrix);
+		drawBlocks(blocks, shader.getProgramId(), camMatrix);
 		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
