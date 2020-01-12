@@ -3,64 +3,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <stb_image.h>
+#include <thread>
 
 #include "drawing.h"
 #include "block.h"
 #include "texture.h"
 #include "camera.h"
-
-// pointer to the camera that's currently being displayed
-Camera* activeCam;
-
-void mouseCallback(GLFWwindow* window, double x, double y) {
-	static const float sensitivity = 0.08;
-
-	// need to keep track of previous x and y to calculate deltas
-	static double lastX = x;
-	static double lastY = y;
-
-	// calculate deltas
-	double deltaX = x - lastX;
-	double deltaY = y - lastY;
-
-	// rotate camera
-	activeCam->rotateYaw(-deltaX * sensitivity);
-	activeCam->rotatePitch(-deltaY * sensitivity);
-
-	// update "last" vars
-	lastX = x;
-	lastY = y;
-}
-
-void processKeys(GLFWwindow* window) {
-	// how fast camera should move when a key is pressed
-	static const float camSpeed = 0.01;
-
-	// process key presses
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		activeCam->translate(activeCam->getForward() * camSpeed);
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		activeCam->translate(activeCam->getForward() * -camSpeed);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		activeCam->translate(activeCam->getRight() * -camSpeed);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		activeCam->translate(activeCam->getRight() * camSpeed);
-	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		activeCam->translate(activeCam->getUp() * camSpeed);
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-		activeCam->translate(activeCam->getUp() * -camSpeed);
-	}
-}
-
-// select which camera to display to the window
-void setActiveCamera(Camera* cam) {
-	activeCam = cam;
-}
+#include "game.h"
 
 int main(void)
 {
@@ -84,10 +33,6 @@ int main(void)
 	// initalize glew
 	glewInit();
 
-	// mouse input setup
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, mouseCallback);	// add mouse callback
-
 	// enable depth testing
 	glEnable(GL_DEPTH_TEST);
 
@@ -108,9 +53,12 @@ int main(void)
 		}
 	}
 
-	// create camera
+	// create and activate camera
 	Camera cam;
-	setActiveCamera(&cam);
+	cam.activate();
+
+	// start game loop
+	std::thread gameThread(startGame, window);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -118,11 +66,9 @@ int main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// process input
-		processKeys(window);
 
 		// get camera matrix
-		glm::mat4 camMatrix = activeCam->getMatrix();
+		glm::mat4 camMatrix = Camera::getActiveCam()->getMatrix();
 
 		drawBlocks(blocks, shader.getProgramId(), camMatrix);
 		
@@ -132,6 +78,9 @@ int main(void)
 		/* Poll for and process events */
 		glfwPollEvents();
 	}
+
+	// wait for game loop to end
+	gameThread.join();
 
 	glfwTerminate();
 	return 0;

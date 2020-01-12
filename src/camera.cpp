@@ -6,7 +6,18 @@
 
 const float Camera::ASPECT_RATIO = 16.0f / 9.0f;
 
+// no camera selected by default
+Camera* Camera::activeCam = nullptr;
+
+Camera* Camera::getActiveCam() {
+	return activeCam;
+}
+
 Camera::Camera(glm::vec3 pos, float pitch, float yaw, float fov) : pos(pos), pitch(pitch), yaw(yaw), fov(fov) {}
+
+void Camera::activate() {
+	activeCam = this;
+}
 
 glm::mat4 Camera::getMatrix() {
 	// view matrix
