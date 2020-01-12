@@ -7,6 +7,7 @@ class Block {
 private:
 	std::string textureName;	// name of texture
 	glm::ivec3 pos;	// position of back, left, bottom corner (lowest x, y, z) along integer grid
+	glm::mat4 model;	// model matrix
 
 	static unsigned int vaoId;	// VAO for a single block (cube)
 	static bool vaoInit;	// whether or not the block VAO has been created

@@ -97,9 +97,9 @@ void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& cam
 	bindTexture(texture, shaderId);
 
 	// loop through blocks
-	for (auto ptrBlock = blocks.begin(); ptrBlock != blocks.end(); ptrBlock++) {
+	for (auto& block : blocks) {
 		// send model matrix
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(ptrBlock->getModelMatrix()));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(block.getModelMatrix()));
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
