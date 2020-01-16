@@ -182,8 +182,14 @@ void Chunk::updateVerts() {
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int z = 0; z < CHUNK_SIZE; z++) {
 			for (int y = 0; y < WORLD_HEIGHT; y++) {
+				printf("processing position: (%d, %d, %d)\n", x, y, z);
 				Block* block;
 				if ((block = blocks[x][y][z]) == nullptr) {
+					continue;
+				}
+
+				// if all faces are hidden, continue
+				if (!block->getFace(BIT_FACE_ALL)) {
 					continue;
 				}
 
