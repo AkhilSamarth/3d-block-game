@@ -4,7 +4,7 @@
 
 std::map<uint32_t, Chunk*> Chunk::chunkList = std::map<uint32_t, Chunk*>();
 
-void Chunk::addBlock(Block* block, int x, int y, int z) {
+void Chunk::addBlock(int x, int y, int z, std::string textureName) {
 	// calculate correct chunk position
 	int chunkX = x - (x % CHUNK_SIZE);
 	int chunkZ = z - (z % CHUNK_SIZE);
@@ -19,13 +19,13 @@ void Chunk::addBlock(Block* block, int x, int y, int z) {
 
 	// add block to the right chunk
 	Chunk* chunk = chunkList[chunkIndex];
-	chunk->blocks[x][y][z] = block;
+	chunk->blocks[x][y][z] = new Block(x - chunkX, y, z - chunkZ, textureName);
 
 	// set update flag
 	chunk->updated = false;
 }
 
-Block* Chunk::removeBlock(int x, int y, int z) {
+void Chunk::removeBlock(int x, int y, int z) {
 	// calculate correct chunk position
 	int chunkX = x - (x % CHUNK_SIZE);
 	int chunkZ = z - (z % CHUNK_SIZE);
@@ -36,7 +36,7 @@ Block* Chunk::removeBlock(int x, int y, int z) {
 	// check if a chunk exists at the given position
 	if (chunkList.find(chunkIndex) == chunkList.end()) {
 		std::cerr << "Chunk for block position (x: " << x << ", y: " << y << ", z: " << z << ") does not exist!" << std::endl;
-		return nullptr;
+		return;
 	}
 
 	// get block if it exists
@@ -45,15 +45,15 @@ Block* Chunk::removeBlock(int x, int y, int z) {
 
 	if (block == nullptr) {
 		std::cerr << "No block found at position (x: " << x << ", y: " << y << ", z: " << z << ") does not exist!" << std::endl;
-		return nullptr;
+		return;
 	}
 
+	// remove block from array and free its memory
 	chunk->blocks[x][y][z] = nullptr;
+	delete block;
 
 	// set update flag
 	chunk->updated = false;
-
-	return block;
 }
 
 std::map<uint32_t, Chunk*> Chunk::getChunks() {

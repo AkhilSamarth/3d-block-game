@@ -10,6 +10,7 @@
 #include "texture.h"
 #include "camera.h"
 #include "game.h"
+#include "chunk.h"
 
 #define FPS_COUNTER_INTERVAL 0.5	// how often (in seconds) to print FPS
 
@@ -52,9 +53,8 @@ int main(void)
 
 	// test blocks
 	std::vector<Block> blocks;
-	for (int i = 0; i < 40; i++) {
-		for (int j = 0; j < 40; j++) {
-			blocks.push_back(Block(i, 0, -j, "test"));
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
 		}
 	}
 

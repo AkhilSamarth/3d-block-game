@@ -23,8 +23,8 @@ private:
 	void updateBlockFaces();	// set which faces of each block are exposed
 	void updateVerts();		// update the verts vector with the correct vertices
 public:
-	static void addBlock(Block* block, int x, int y, int z);	// add block to correct chunk at position (x, y, z) in global coords
-	static Block* removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
+	static void addBlock(int x, int y, int z, std::string textureName);	// add block to correct chunk at position (x, y, z) in global coords
+	static void removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
 	static std::map<uint32_t, Chunk*> getChunks();	// returns the chunk list
 	static uint32_t getChunkIndex(int x, int z);	// returns the map key corresponding to this x and z
 
