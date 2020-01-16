@@ -114,6 +114,29 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 	// add to chunkList
 	chunkList[getChunkIndex(pos.x, pos.y)] = this;
 
+	// check if neighbors exist, and if so, create a connection to them
+	Chunk* neighbor;
+	if ((neighbor = chunkList[getChunkIndex(pos.x, pos.y - 1)]) != nullptr) {
+		// front
+		neighborChunks[0] = neighbor;
+		neighbor->addNeighbor(this);
+	}
+	if ((neighbor = chunkList[getChunkIndex(pos.x + 1, pos.y)]) != nullptr) {
+		// right
+		neighborChunks[1] = neighbor;
+		neighbor->addNeighbor(this);
+	}
+	if ((neighbor = chunkList[getChunkIndex(pos.x, pos.y + 1)]) != nullptr) {
+		// back
+		neighborChunks[2] = neighbor;
+		neighbor->addNeighbor(this);
+	}
+	if ((neighbor = chunkList[getChunkIndex(pos.x - 1, pos.y - 1)]) != nullptr) {
+		// left
+		neighborChunks[3] = neighbor;
+		neighbor->addNeighbor(this);
+	}
+
 	// generate vao and set attributes
 	glGenVertexArrays(1, &vaoId);
 	glGenBuffers(1, &bufferId);
@@ -235,7 +258,6 @@ void Chunk::updateBuffer() {
 	// update buffer with verts
 	glNamedBufferData(bufferId, verts.size() * sizeof(Vertex), &verts[0], GL_DYNAMIC_DRAW);
 }
-
 
 void Chunk::addNeighbor(Chunk* chunk) {
 	// get the position of the neighbor chunk

@@ -51,8 +51,8 @@ int main(void)
 	shader.linkProgram();
 	
 	// test blocks
-	for (int i = -20; i < 10; i++) {
-		for (int j = -20; j < 10; j++) {
+	for (int i = 0; i < 500; i++) {
+		for (int j = 0; j < 500; j++) {
 			for (int k = 1; k < 2; k++) {
 				Chunk::addBlock(i, k, j, "test");
 			}
