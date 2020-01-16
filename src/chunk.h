@@ -24,7 +24,7 @@ private:
 	void updateVerts();		// update the verts vector with the correct vertices
 public:
 	static void addBlock(Block* block, int x, int y, int z);	// add block to correct chunk at position (x, y, z) in global coords
-	static void removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
+	static Block* removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
 
 	Chunk(glm::ivec2 pos);	// create a chunk at the given (x, z)
 	~Chunk();
