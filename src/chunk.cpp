@@ -7,9 +7,9 @@ Chunk::Chunk(glm::vec2 pos) : pos(glm::vec3(pos.x, 0, pos.y)), blocks(), neighbo
 void Chunk::generateBlocks() {}
 
 void Chunk::updateBlockFaces() {
-	// loop through all inner (non-boundary blocks)
-	for (int x = 1; x < CHUNK_SIZE - 1; x++) {
-		for (int z = 1; z < CHUNK_SIZE - 1; z++) {
+	// loop through all chunk blocks
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int z = 0; z < CHUNK_SIZE; z++) {
 			for (int y = 0; y < WORLD_HEIGHT; y++) {
 				// set face status of neighbor blocks depending on this one
 				// if this block exists, neighbor blocks have hidden faces
@@ -18,22 +18,22 @@ void Chunk::updateBlockFaces() {
 				
 				// set status of neighbor blocks, if they exist
 				Block* neighbor;
-				if ((neighbor = blocks[x + 1][y][z]) != nullptr) {
+				if (x + 1 < CHUNK_SIZE && (neighbor = blocks[x + 1][y][z]) != nullptr) {
 					neighbor->boolFace(BIT_FACE_LEFT, exposed);
 				}
-				else if ((neighbor = blocks[x - 1][y][z]) != nullptr) {
+				if (x - 1 >= 0 && (neighbor = blocks[x - 1][y][z]) != nullptr) {
 					neighbor->boolFace(BIT_FACE_RIGHT, exposed);
 				}
-				else if ((neighbor = blocks[x][y + 1][z]) != nullptr) {
+				if (y + 1 < WORLD_HEIGHT && (neighbor = blocks[x][y + 1][z]) != nullptr) {
 					neighbor->boolFace(BIT_FACE_BOTTOM, exposed);
 				}
-				else if ((neighbor = blocks[x][y - 1][z]) != nullptr) {
+				if (y - 1 >= 0 && (neighbor = blocks[x][y - 1][z]) != nullptr) {
 					neighbor->boolFace(BIT_FACE_TOP, exposed);
 				}
-				else if ((neighbor = blocks[x][y][z + 1]) != nullptr) {
+				if (z + 1 < CHUNK_SIZE && (neighbor = blocks[x][y][z + 1]) != nullptr) {
 					neighbor->boolFace(BIT_FACE_FRONT, exposed);
 				}
-				else if ((neighbor = blocks[x][y][z - 1]) != nullptr) {
+				if (z - 1 >= 0 && (neighbor = blocks[x][y][z - 1]) != nullptr) {
 					neighbor->boolFace(BIT_FACE_BACK, exposed);
 				}
 			}
