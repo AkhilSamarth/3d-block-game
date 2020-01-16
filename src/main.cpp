@@ -55,6 +55,7 @@ int main(void)
 	std::vector<Block> blocks;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
+			Chunk::addBlock(i, 0, j, "test");
 		}
 	}
 
@@ -78,6 +79,9 @@ int main(void)
 
 		// get camera matrix
 		glm::mat4 camMatrix = Camera::getActiveCam()->getMatrix();
+
+		// draw chunks
+		drawChunks(shader.getProgramId(), camMatrix);
 		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

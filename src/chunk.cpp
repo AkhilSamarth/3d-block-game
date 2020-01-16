@@ -159,6 +159,11 @@ void Chunk::updateVerts() {
 }
 
 void Chunk::update() {
+	// don't do anything if update isn't needed
+	if (updated) {
+		return;
+	}
+
 	// call the two update functions
 	updateBlockFaces();
 	updateVerts();
