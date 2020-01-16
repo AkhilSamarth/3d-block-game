@@ -48,7 +48,7 @@ void Chunk::removeBlock(int x, int y, int z) {
 
 	// get block if it exists
 	Chunk* chunk = chunkList[chunkIndex];
-	Block* block = chunk->blocks[x][y][z];
+	Block* block = chunk->blocks[x - chunkX][y][z - chunkZ];
 
 	if (block == nullptr) {
 		std::cerr << "No block found at position (x: " << x << ", y: " << y << ", z: " << z << ") does not exist!" << std::endl;
@@ -56,7 +56,7 @@ void Chunk::removeBlock(int x, int y, int z) {
 	}
 
 	// remove block from array and free its memory
-	chunk->blocks[x][y][z] = nullptr;
+	chunk->blocks[x - chunkX][y][z - chunkZ] = nullptr;
 	delete block;
 
 	// set update flag

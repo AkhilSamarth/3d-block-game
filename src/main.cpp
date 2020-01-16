@@ -58,6 +58,7 @@ int main(void)
 			}
 		}
 	}
+	Chunk::addBlock(0, 2, 12, "test");
 
 	// update chunks
 	for (auto i = Chunk::chunkList.begin(); i != Chunk::chunkList.end(); i++) {
