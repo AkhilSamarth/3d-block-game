@@ -51,15 +51,18 @@ int main(void)
 	shader.linkProgram();
 
 	// test blocks
-	/*
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			Chunk::addBlock(i, 0, j, "test");
+	for (int i = 1; i < 50; i++) {
+		for (int j = 0; j < 50; j++) {
+			for (int k = 1; k < 2; k++) {
+				Chunk::addBlock(i, k, j, "test");
+			}
 		}
 	}
-	*/
-	Chunk::addBlock(0, 0, 0, "test");
-	Chunk::chunkList[Chunk::getChunkIndex(0, 0)]->update();
+
+	// update chunks
+	for (auto i = Chunk::chunkList.begin(); i != Chunk::chunkList.end(); i++) {
+		i->second->update();
+	}
 
 	// create and activate camera
 	Camera cam;

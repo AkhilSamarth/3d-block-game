@@ -1,10 +1,9 @@
 #include <iostream>
-#include <thread>
-#include <chrono>
-
+#include <GL/glew.h>
 #include <GLFW\glfw3.h>
 
 #include "camera.h"
+#include "chunk.h"
 
 void mouseCallback(GLFWwindow* window, double x, double y) {
 	static const float sensitivity = 0.08;
@@ -52,29 +51,12 @@ void processKeys(GLFWwindow* window) {
 }
 
 void startGame(GLFWwindow* window) {
-	using namespace std::chrono;	// chrono being used for timekeeping to limit loop
-
-	// how many ticks per second the game should run at (iterations of game loop per second)
-	static const double TPS = 100;
-	static const uint64_t MICROS_PER_TICK = 1000000 / TPS;		// the number of microseconds between each tick
-	static uint64_t lastTime = (duration_cast<microseconds>(steady_clock::now().time_since_epoch())).count();
-
 	// mouse input setup
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouseCallback);	// add mouse callback
 
 	// keep running until window should close (same as rendering loop)
 	while (!glfwWindowShouldClose(window)) {
-		lastTime = (duration_cast<microseconds>(steady_clock::now().time_since_epoch())).count();		// update lastTime
-		
 		processKeys(window);
-
-		// make sure loop stays below TPS
-		uint64_t currentTime = (duration_cast<microseconds>(steady_clock::now().time_since_epoch())).count();
-		uint64_t delta = currentTime - lastTime;	// time taken for loop to complete
-		if (delta < MICROS_PER_TICK) {
-			uint64_t timeRemaining = MICROS_PER_TICK - delta;		// time until next loop should run
-			std::this_thread::sleep_for(microseconds(timeRemaining));
-		}
 	}
 }
