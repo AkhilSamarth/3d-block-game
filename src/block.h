@@ -14,7 +14,7 @@
 class Block {
 private:
 	std::string textureName;	// name of texture
-	glm::ivec3 pos;		// position of back, left, bottom corner (lowest x, y, z) along integer grid
+	glm::ivec3 pos;		// position of back, left, bottom corner (lowest x, y, z) along integer grid within this chunk
 	unsigned char exposedFaces;		// 1 byte bitmask for which faces are exposed
 public:
 	// vertex arrays which contain data for each face
