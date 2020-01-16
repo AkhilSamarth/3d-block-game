@@ -7,7 +7,7 @@
 
 #include "drawing.h"
 #include "texture.h"
-
+#include "chunk.h"
 
 Shader::Shader() : progInit(false) {
 	progId = glCreateProgram();
@@ -81,5 +81,12 @@ void Shader::linkProgram() {
 }
 
 void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
-	
+	// activate the shader
+	glUseProgram(shaderId);
+
+	// get the chunk list and loop through it
+	std::map<uint32_t, Chunk*> chunkList = Chunk::getChunks();
+	for (auto entry = chunkList.begin(); entry != chunkList.end(); entry++) {
+		Chunk*
+	}
 }

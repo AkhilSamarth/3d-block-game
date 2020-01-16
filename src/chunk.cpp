@@ -56,10 +56,6 @@ void Chunk::removeBlock(int x, int y, int z) {
 	chunk->updated = false;
 }
 
-std::map<uint32_t, Chunk*> Chunk::getChunks() {
-	return chunkList;
-}
-
 uint32_t Chunk::getChunkIndex(int x, int z) {
 	return x << 16 + z;
 }
