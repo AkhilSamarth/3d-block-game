@@ -49,7 +49,7 @@ int main(void)
 	shader.addShader("assetts/shaders/shader_vertex.glsl", GL_VERTEX_SHADER);
 	shader.addShader("assetts/shaders/shader_fragment.glsl", GL_FRAGMENT_SHADER);
 	shader.linkProgram();
-
+	
 	// test blocks
 	for (int i = -20; i < 10; i++) {
 		for (int j = -20; j < 10; j++) {

@@ -11,14 +11,24 @@ void Chunk::getChunkPosition(int globalX, int globalZ, int& chunkX, int& chunkZ)
 		chunkX = globalX - (globalX % CHUNK_SIZE);
 	}
 	else {
-		chunkX = globalX + (-globalX % CHUNK_SIZE) - CHUNK_SIZE;
+		if (-globalX % CHUNK_SIZE == 0) {
+			chunkX = globalX + (-globalX % CHUNK_SIZE);
+		}
+		else {
+			chunkX = globalX + (-globalX % CHUNK_SIZE) - CHUNK_SIZE;
+		}
 	}
 
 	if (globalZ >= 0) {
 		chunkZ = globalZ - (globalZ % CHUNK_SIZE);
 	}
 	else {
-		chunkZ = globalZ + (-globalZ % CHUNK_SIZE) - CHUNK_SIZE;
+		if (-globalZ % CHUNK_SIZE == 0) {
+			chunkZ = globalZ + (-globalZ % CHUNK_SIZE);
+		}
+		else {
+			chunkZ = globalZ + (-globalZ % CHUNK_SIZE) - CHUNK_SIZE;
+		}
 	}
 }
 
@@ -121,7 +131,7 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 
 Chunk::~Chunk() {
 	// remove this chunk from the list
-	chunkList.erase(getChunkIndex(this->pos.x, this->pos.z));
+	chunkList.erase(getChunkIndex(pos.x, pos.z));
 }
 
 void Chunk::updateBlockFaces() {
