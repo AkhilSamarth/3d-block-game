@@ -31,6 +31,7 @@ public:
 	std::string getTextureName();	// returns the name of the texture of this block
 
 	void setFace(unsigned char bits);		// sets which faces are exposed (e.g. setFaces(BIT_FACE_TOP | BIT_FACE_FRONT))
-	void resetFace(unsigned char bits);	// sets which faces are not exposed (see example above)
+	void resetFace(unsigned char bits);		// sets which faces are not exposed (see example above)
+	void boolFace(unsigned char bits, bool status);		// sets the given faces based on status
 	bool getFace(unsigned char bits);		// gets which faces are exposed (if multiple bits supplied, returns true only if all given faces are exposed)
 };

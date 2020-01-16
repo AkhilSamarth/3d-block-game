@@ -6,7 +6,16 @@ Chunk::Chunk(glm::vec2 pos) : pos(glm::vec3(pos.x, 0, pos.y)), blocks(), neighbo
 
 void Chunk::generateBlocks() {}
 
-void Chunk::updateBlockFaces() {}
+void Chunk::updateBlockFaces() {
+	// loop through all inner (non-boundary blocks)
+	for (int x = 1; x < CHUNK_SIZE - 1; x++) {
+		for (int z = 1; z < CHUNK_SIZE - 1; z++) {
+			for (int y = 0; y < WORLD_HEIGHT; y++) {
+
+			}
+		}
+	}
+}
 
 void Chunk::addNeighbor(Chunk* chunk) {
 	// get the position of the neighbor chunk

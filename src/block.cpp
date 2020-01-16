@@ -77,6 +77,15 @@ void Block::resetFace(unsigned char bits) {
 	exposedFaces &= ~bits;
 }
 
+void Block::boolFace(unsigned char bits, bool status) {
+	if (status) {
+		setFace(bits);
+	}
+	else {
+		resetFace(bits);
+	}
+}
+
 bool Block::getFace(unsigned char bits) {
 	return exposedFaces & bits;
 }
