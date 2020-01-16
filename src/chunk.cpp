@@ -64,7 +64,7 @@ void Chunk::removeBlock(int x, int y, int z) {
 }
 
 uint32_t Chunk::getChunkIndex(int x, int z) {
-	return x << 16 + z;
+	return (x << 16) + z;
 }
 
 Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Vertex>()) {

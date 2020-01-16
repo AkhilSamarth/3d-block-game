@@ -58,13 +58,10 @@ int main(void)
 			}
 		}
 	}
-	Chunk::addBlock(0, 2, 12, "test");
 
 	// update chunks
 	for (auto i = Chunk::chunkList.begin(); i != Chunk::chunkList.end(); i++) {
 		i->second->update();
-		glm::ivec3 pos = i->second->getPosition();
-		std::cout << pos.x << ", " << pos.z << std::endl;
 	}
 
 	// create and activate camera
