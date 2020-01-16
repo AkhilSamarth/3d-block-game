@@ -27,7 +27,7 @@ const Vertex Block::BOTTOM_FACE[6] = {
 			0.5, -0.5, 0.5,			1, 0,
 			-0.5, -0.5, 0.5,		0, 0};
 
-const Vertex Block::FRONT_FACE[6] = { 
+const Vertex Block::BACK_FACE[6] = { 
 			0.5, -0.5, 0.5,			1, 0,
 			0.5, 0.5, 0.5,			1, 1,
 			-0.5, 0.5, 0.5,			0, 1,
@@ -36,7 +36,7 @@ const Vertex Block::FRONT_FACE[6] = {
 			0.5, -0.5, 0.5,			1, 0,
 			-0.5, 0.5, 0.5,			0, 1};
 
-const Vertex Block::BACK_FACE[6] = {
+const Vertex Block::FRONT_FACE[6] = {
 			-0.5, 0.5, -0.5,		0, 1,
 			0.5, 0.5, -0.5,			1, 1,
 			0.5, -0.5, -0.5,		1, 0,
