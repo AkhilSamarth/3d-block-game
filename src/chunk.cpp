@@ -182,7 +182,6 @@ void Chunk::updateVerts() {
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int z = 0; z < CHUNK_SIZE; z++) {
 			for (int y = 0; y < WORLD_HEIGHT; y++) {
-				printf("processing position: (%d, %d, %d)\n", x, y, z);
 				Block* block;
 				if ((block = blocks[x][y][z]) == nullptr) {
 					continue;
@@ -218,6 +217,11 @@ void Chunk::updateVerts() {
 }
 
 void Chunk::updateBuffer() {
+	// if verts is empty, continue
+	if (verts.empty()) {
+		return;
+	}
+
 	// update buffer with verts
 	glNamedBufferData(bufferId, verts.size() * sizeof(Vertex), &verts[0], GL_DYNAMIC_DRAW);
 }
@@ -263,6 +267,11 @@ void Chunk::update() {
 	updateBlockFaces();
 	updateVerts();
 	updateBuffer();
+
+	// if verts is empty, no need to do anything with this chunk
+	if (verts.empty()) {
+		return;
+	}
 
 	// set update flag
 	updated = true;
