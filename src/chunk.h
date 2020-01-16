@@ -18,6 +18,7 @@ private:													// key is formatted as: (x << 16 + z), i.e. first 16 bits =
 	std::vector<Vertex> verts;	// all vertices of all faces which should be drawn of blocks in this chunk
 	bool updated;		// whether or not the block faces and verts of this chunk are up-to-date
 	unsigned int vaoId, bufferId;		// id of the vao that holds this chunk
+	glm::mat4 model;	// model matrix
 
 	void updateBlockFaces();	// set which faces of each block are exposed
 	void updateVerts();		// update the verts vector with the correct vertices
@@ -39,4 +40,5 @@ public:
 	glm::ivec3 getPosition();	// returns the position of this chunk
 	unsigned int getVaoId();		// return the vertices array
 	int getVertexCount();		// returns the total number of vertices of this chunk's vao
+	glm::mat4 getModelMatrix();		// returns this chunk's model matrix
 };

@@ -84,9 +84,22 @@ void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
 	// activate the shader
 	glUseProgram(shaderId);
 
+	// send cam matrix
+	unsigned int camLoc = glGetUniformLocation(shaderId, "camera");
+	glUniformMatrix4fv(camLoc, 1, GL_FALSE, glm::value_ptr(camMatrix));
+
+	// find model location
+	unsigned int modelLoc = glGetUniformLocation(shaderId, "model");
+
+	// bind texture
+	bindTexture("test", shaderId);
+
 	// get the chunk list and loop through it
 	for (auto entry = Chunk::chunkList.begin(); entry != Chunk::chunkList.end(); entry++) {
 		Chunk* chunk = entry->second;	// current chunk
+
+		// send model
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(chunk->getModelMatrix()));
 
 		// bind vao and draw
 		glBindVertexArray(chunk->getVaoId());

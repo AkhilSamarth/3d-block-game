@@ -58,6 +58,7 @@ int main(void)
 			Chunk::addBlock(i, 0, j, "test");
 		}
 	}
+	Chunk::chunkList[Chunk::getChunkIndex(0, 0)]->update();
 
 	// create and activate camera
 	Camera cam;
@@ -75,7 +76,6 @@ int main(void)
 
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
 		// get camera matrix
 		glm::mat4 camMatrix = Camera::getActiveCam()->getMatrix();

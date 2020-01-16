@@ -1,4 +1,5 @@
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "chunk.h"
 
@@ -71,6 +72,9 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 
 	// set position
 	this->pos = glm::ivec3(pos.x, 0, pos.y);
+
+	// set model matrix
+	model = glm::translate(glm::mat4(1.0f), glm::vec3(this->pos));
 
 	// add to chunkList
 	chunkList[getChunkIndex(pos.x, pos.y)] = this;
@@ -238,4 +242,8 @@ unsigned int Chunk::getVaoId() {
 
 int Chunk::getVertexCount() {
 	return verts.size();
+}
+
+glm::mat4 getModelMatrix() {
+	return model;
 }
