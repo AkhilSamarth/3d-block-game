@@ -48,6 +48,10 @@ Block* Chunk::removeBlock(int x, int y, int z) {
 	return block;
 }
 
+std::map<glm::ivec2, Chunk*> Chunk::getChunks() {
+	return chunkList;
+}
+
 Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Vertex>()) {
 	// check position
 	if (pos.x % CHUNK_SIZE != 0 || pos.y % CHUNK_SIZE != 0) {
