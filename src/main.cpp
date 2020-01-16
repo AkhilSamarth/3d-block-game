@@ -51,12 +51,14 @@ int main(void)
 	shader.linkProgram();
 
 	// test blocks
-	std::vector<Block> blocks;
+	/*
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			Chunk::addBlock(i, 0, j, "test");
 		}
 	}
+	*/
+	Chunk::addBlock(0, 0, 0, "test");
 	Chunk::chunkList[Chunk::getChunkIndex(0, 0)]->update();
 
 	// create and activate camera

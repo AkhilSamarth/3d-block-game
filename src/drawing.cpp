@@ -81,7 +81,8 @@ void Shader::linkProgram() {
 }
 
 std::ostream& operator<<(std::ostream& out, Vertex& vert) {
-	out << "Vertex: [position: (" << vert.pos[0] << ", " << vert.pos[1] << ", " << vert.pos[2] << ")]";
+	out << "Vertex: [position: (" << vert.pos[0] << ", " << vert.pos[1] << ", " << vert.pos[2] << "), "
+		<< "texture coords: (" << vert.texturePos[0] << ", " << vert.texturePos[1] << ")]";
 	return out;
 }
 

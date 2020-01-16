@@ -6,7 +6,7 @@
 #include "block.h"
 #include "drawing.h"
 
-// fill data arrays
+// fill data arrays for a block that's centered at (0, 0, 0)
 // arranged as:
 //			position				texture coords
 const Vertex Block::TOP_FACE[6] = { 
