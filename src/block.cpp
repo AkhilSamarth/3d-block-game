@@ -92,17 +92,7 @@ void Block::initVao() {
 	vaoInit = true;
 }
 
-Block::Block(int x, int y, int z, std::string textureName) : textureName(textureName) {
-	pos = glm::vec3(x, y, z);
-
-	// create model matrix
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(pos));
-}
-
-glm::mat4 Block::getModelMatrix() {
-	return model;
-}
+Block::Block(int x, int y, int z, std::string textureName) : textureName(textureName), pos(glm::vec3(x, y, z)), exposedFaces(0) {}
 
 std::string Block::getTextureName() {
 	return textureName;
