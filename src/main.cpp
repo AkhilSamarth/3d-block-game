@@ -51,8 +51,8 @@ int main(void)
 	shader.linkProgram();
 
 	// test blocks
-	for (int i = 1; i < 50; i++) {
-		for (int j = 0; j < 50; j++) {
+	for (int i = 1; i < 20; i++) {
+		for (int j = 1; j < 20; j++) {
 			for (int k = 1; k < 2; k++) {
 				Chunk::addBlock(i, k, j, "test");
 			}
@@ -62,6 +62,8 @@ int main(void)
 	// update chunks
 	for (auto i = Chunk::chunkList.begin(); i != Chunk::chunkList.end(); i++) {
 		i->second->update();
+		glm::ivec3 pos = i->second->getPosition();
+		std::cout << pos.x << ", " << pos.z << std::endl;
 	}
 
 	// create and activate camera

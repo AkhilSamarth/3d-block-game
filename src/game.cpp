@@ -5,9 +5,10 @@
 #include "camera.h"
 #include "chunk.h"
 
-void mouseCallback(GLFWwindow* window, double x, double y) {
-	static const float sensitivity = 0.08;
+#define MOUSE_SENS 0.08		// mouse sensitivity
+#define MOVE_SPEED 5		// speed on key presses (units per second)
 
+void mouseCallback(GLFWwindow* window, double x, double y) {
 	// need to keep track of previous x and y to calculate deltas
 	static double lastX = x;
 	static double lastY = y;
@@ -17,17 +18,18 @@ void mouseCallback(GLFWwindow* window, double x, double y) {
 	double deltaY = y - lastY;
 
 	// rotate camera
-	Camera::getActiveCam()->rotateYaw(-deltaX * sensitivity);
-	Camera::getActiveCam()->rotatePitch(-deltaY * sensitivity);
+	Camera::getActiveCam()->rotateYaw(-deltaX * MOUSE_SENS);
+	Camera::getActiveCam()->rotatePitch(-deltaY * MOUSE_SENS);
 
 	// update "last" vars
 	lastX = x;
 	lastY = y;
 }
 
-void processKeys(GLFWwindow* window) {
-	// how fast camera should move when a key is pressed
-	static const float camSpeed = 0.05;
+// deals with key presses
+// delta is used to make sure movement speed doesn't change based on computer performance
+void processKeys(GLFWwindow* window, float delta) {
+	float camSpeed = MOVE_SPEED * delta;
 
 	// process key presses
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -55,8 +57,13 @@ void startGame(GLFWwindow* window) {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouseCallback);	// add mouse callback
 
+	float delta = glfwGetTime();		// used to keep track of time between loop iterations
 	// keep running until window should close (same as rendering loop)
 	while (!glfwWindowShouldClose(window)) {
-		processKeys(window);
+		float loopStartTime = glfwGetTime();	// used to update delta
+
+		processKeys(window, delta);
+	
+		delta = glfwGetTime() - loopStartTime;
 	}
 }
