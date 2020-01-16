@@ -3,6 +3,8 @@
 #include <string>
 #include <glm/glm.hpp>
 
+#include "drawing.h"
+
 #define BIT_FACE_TOP 1
 #define BIT_FACE_BOTTOM 2
 #define BIT_FACE_FRONT 4
@@ -14,7 +16,7 @@
 class Block {
 private:
 	std::string textureName;	// name of texture
-	glm::ivec3 pos;		// position of back, left, bottom corner (lowest x, y, z) along integer grid within this chunk
+	glm::ivec3 pos;		// position of left, bottom, front corner (lowest x, y, z) along integer grid
 	unsigned char exposedFaces;		// 1 byte bitmask for which faces are exposed
 public:
 	// vertex arrays which contain data for each face
