@@ -14,7 +14,7 @@ class Block {
 private:
 	std::string textureName;	// name of texture
 	glm::ivec3 pos;		// position of back, left, bottom corner (lowest x, y, z) along integer grid
-	unsigned char exposedFaces;		// bitmask for which faces are exposed
+	unsigned char exposedFaces;		// 1 byte bitmask for which faces are exposed
 public:
 	// vertex arrays which contain data for each face
 	static const Vertex TOP_FACE[6];
@@ -26,4 +26,8 @@ public:
 
 	Block(int x, int y, int z, std::string textureName);		// position set to (x, y, z), textureName must match key in textureMap
 	std::string getTextureName();	// returns the name of the texture of this block
+
+	void setFace(unsigned char bits);		// sets which faces are exposed (e.g. setFaces(BIT_FACE_TOP | BIT_FACE_FRONT))
+	void resetFace(unsigned char bits);	// sets which faces are not exposed (see example above)
+	bool getFace(unsigned char bits);		// gets which faces are exposed (if multiple bits supplied, returns true only if all given faces are exposed)
 };

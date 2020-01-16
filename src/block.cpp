@@ -68,3 +68,15 @@ Block::Block(int x, int y, int z, std::string textureName) : textureName(texture
 std::string Block::getTextureName() {
 	return textureName;
 }
+
+void Block::setFace(unsigned char bits) {
+	exposedFaces |= bits;
+}
+
+void Block::resetFace(unsigned char bits) {
+	exposedFaces &= ~bits;
+}
+
+bool Block::getFace(unsigned char bits) {
+	return exposedFaces & bits;
+}
