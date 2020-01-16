@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -25,6 +26,8 @@ public:
 struct Vertex{
 	float pos[3];		// position of vertex
 	float texturePos[2];	// texture coordinates
+
+	friend std::ostream& operator<<(std::ostream& out, Vertex& vert);
 };
 
 void drawChunks(unsigned int shaderId, glm::mat4& camMatrix);	// draw all the chunks in the chunk list

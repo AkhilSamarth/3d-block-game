@@ -80,6 +80,11 @@ void Shader::linkProgram() {
 	progInit = true;
 }
 
+std::ostream& operator<<(std::ostream& out, Vertex& vert) {
+	out << "Vertex: [position: (" << vert.pos[0] << ", " << vert.pos[1] << ", " << vert.pos[2] << ")]";
+	return out;
+}
+
 void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
 	// activate the shader
 	glUseProgram(shaderId);

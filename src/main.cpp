@@ -12,9 +12,8 @@
 #include "game.h"
 #include "chunk.h"
 
+#define SHOW_FPS false
 #define FPS_COUNTER_INTERVAL 0.5	// how often (in seconds) to print FPS
-
-static const bool showFPS = true;	// whether or not to print the FPS
 
 int main(void)
 {
@@ -87,7 +86,7 @@ int main(void)
 		glfwSwapBuffers(window);
 
 		// update FPS timer if needed
-		if (showFPS && (glfwGetTime() - fpsTimer >= FPS_COUNTER_INTERVAL)) {
+		if (SHOW_FPS && (glfwGetTime() - fpsTimer >= FPS_COUNTER_INTERVAL)) {
 			printf("FPS: %f, sec per frame (1/FPS): %f\n", 1.0f / ((glfwGetTime() - renderStartTime)), (glfwGetTime() - renderStartTime));
 			fpsTimer = glfwGetTime();
 		}

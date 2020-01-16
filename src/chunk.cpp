@@ -244,6 +244,6 @@ int Chunk::getVertexCount() {
 	return verts.size();
 }
 
-glm::mat4 getModelMatrix() {
+glm::mat4 Chunk::getModelMatrix() {
 	return model;
 }
