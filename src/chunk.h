@@ -12,8 +12,8 @@
 
 class Chunk {
 private:
-	static std::map<glm::ivec2, Chunk*> chunkList;		// a list of all the chunks mapped using chunk (x, z) position
-
+	static std::map<uint32_t, Chunk*> chunkList;		// a list of all the chunks mapped using a key based on chunk position												// index is (x << 16 + z), i.e. first 16 bits are x, last 16 are z
+														// key is formatted as: (x << 16 + z), i.e. first 16 bits = x, second 16 bits = z
 	Block* blocks[CHUNK_SIZE][WORLD_HEIGHT][CHUNK_SIZE];	// pointers to all blocks in this chunk at correct position
 	Chunk* neighborChunks[4];		// pointers to surrounding chunks in order (front, right, back, left)
 	glm::ivec3 pos;		// position of left, front corner (lowest x, z, y always 0) along integer grid (must be multiple of CHUNK_SIZE)
@@ -25,7 +25,8 @@ private:
 public:
 	static void addBlock(Block* block, int x, int y, int z);	// add block to correct chunk at position (x, y, z) in global coords
 	static Block* removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
-	static std::map<glm::ivec2, Chunk*> getChunks();	// returns the chunk list
+	static std::map<uint32_t, Chunk*> getChunks();	// returns the chunk list
+	static uint32_t getChunkIndex(int x, int z);	// returns the map key corresponding to this x and z
 
 	Chunk(glm::ivec2 pos);	// create a chunk at the given (x, z)
 	~Chunk();

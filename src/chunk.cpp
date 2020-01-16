@@ -2,18 +2,23 @@
 
 #include "chunk.h"
 
+std::map<uint32_t, Chunk*> Chunk::chunkList = std::map<uint32_t, Chunk*>();
+
 void Chunk::addBlock(Block* block, int x, int y, int z) {
 	// calculate correct chunk position
 	int chunkX = x - (x % CHUNK_SIZE);
 	int chunkZ = z - (z % CHUNK_SIZE);
 
+	// calculate chunk index for map
+	uint32_t chunkIndex = getChunkIndex(chunkX, chunkZ);
+
 	// check if a chunk exists at the given position, if not create it
-	if (chunkList.find(glm::ivec2(chunkX, chunkZ)) == chunkList.end()) {
-		chunkList[glm::ivec2(chunkX, chunkZ)] = new Chunk(glm::ivec2(chunkX, chunkZ));
+	if (chunkList.find(chunkIndex) == chunkList.end()) {
+		chunkList[chunkIndex] = new Chunk(glm::ivec2(chunkX, chunkZ));
 	}
 
 	// add block to the right chunk
-	Chunk* chunk = chunkList[glm::ivec2(chunkX, chunkZ)];
+	Chunk* chunk = chunkList[chunkIndex];
 	chunk->blocks[x][y][z] = block;
 
 	// set update flag
@@ -25,14 +30,17 @@ Block* Chunk::removeBlock(int x, int y, int z) {
 	int chunkX = x - (x % CHUNK_SIZE);
 	int chunkZ = z - (z % CHUNK_SIZE);
 
+	// calculate chunk index for map
+	uint32_t chunkIndex = getChunkIndex(chunkX, chunkZ);
+
 	// check if a chunk exists at the given position
-	if (chunkList.find(glm::ivec2(chunkX, chunkZ)) == chunkList.end()) {
+	if (chunkList.find(chunkIndex) == chunkList.end()) {
 		std::cerr << "Chunk for block position (x: " << x << ", y: " << y << ", z: " << z << ") does not exist!" << std::endl;
 		return nullptr;
 	}
 
 	// get block if it exists
-	Chunk* chunk = chunkList[glm::ivec2(chunkX, chunkZ)];
+	Chunk* chunk = chunkList[chunkIndex];
 	Block* block = chunk->blocks[x][y][z];
 
 	if (block == nullptr) {
@@ -48,8 +56,12 @@ Block* Chunk::removeBlock(int x, int y, int z) {
 	return block;
 }
 
-std::map<glm::ivec2, Chunk*> Chunk::getChunks() {
+std::map<uint32_t, Chunk*> Chunk::getChunks() {
 	return chunkList;
+}
+
+uint32_t Chunk::getChunkIndex(int x, int z) {
+	return x << 16 + z;
 }
 
 Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Vertex>()) {
@@ -65,12 +77,12 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 	this->pos = glm::ivec3(pos.x, 0, pos.y);
 
 	// add to chunkList
-	chunkList[pos] = this;
+	chunkList[getChunkIndex(pos.x, pos.y)] = this;
 }
 
 Chunk::~Chunk() {
 	// remove this chunk from the list
-	chunkList.erase(glm::ivec2(pos.x, pos.z));
+	chunkList.erase(getChunkIndex(this->pos.x, this->pos.z));
 }
 
 
@@ -157,6 +169,10 @@ void Chunk::update() {
 
 bool Chunk::isUpdated() {
 	return updated;
+}
+
+glm::ivec3 Chunk::getPosition() {
+	return pos;
 }
 
 std::vector<Vertex> Chunk::getVertices() {
