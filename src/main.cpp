@@ -39,7 +39,7 @@ int main(void)
 
 	// enable depth testing and face culling
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	// load textures
 	loadTexture("assetts/textures/test.png", "test");

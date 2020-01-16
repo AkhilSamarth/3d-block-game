@@ -99,7 +99,6 @@ Chunk::~Chunk() {
 	chunkList.erase(getChunkIndex(this->pos.x, this->pos.z));
 }
 
-
 void Chunk::updateBlockFaces() {
 	// loop through all chunk blocks
 	for (int x = 0; x < CHUNK_SIZE; x++) {
@@ -135,6 +134,22 @@ void Chunk::updateBlockFaces() {
 	}
 }
 
+void Chunk::addFace(const Vertex* face, int x, int y, int z) {
+	// loop through all 6 verts of this face
+	for (const Vertex* vertPtr = face; vertPtr < face + 6; vertPtr++) {
+		// new vertex which will be added to the verts list
+		Vertex outVert = *vertPtr;
+
+		// shift position to be at right spot
+		outVert.pos[0] += 0.5 + x;
+		outVert.pos[1] += 0.5 + y;
+		outVert.pos[2] += 0.5 + z;
+
+		// add to verts
+		verts.push_back(outVert);
+	}
+}
+
 void Chunk::updateVerts() {
 	verts.clear();
 
@@ -150,22 +165,22 @@ void Chunk::updateVerts() {
 
 				// add exposed faces
 				if (block->getFace(BIT_FACE_TOP)) {
-					verts.insert(verts.end(), Block::TOP_FACE, Block::TOP_FACE + 6);
+					addFace(Block::TOP_FACE, x, y, z);
 				}
 				if (block->getFace(BIT_FACE_BOTTOM)) {
-					verts.insert(verts.end(), Block::BOTTOM_FACE, Block::BOTTOM_FACE + 6);
+					addFace(Block::BOTTOM_FACE, x, y, z);
 				}
 				if (block->getFace(BIT_FACE_LEFT)) {
-					verts.insert(verts.end(), Block::LEFT_FACE, Block::LEFT_FACE + 6);
+					addFace(Block::LEFT_FACE, x, y, z);
 				}
 				if (block->getFace(BIT_FACE_RIGHT)) {
-					verts.insert(verts.end(), Block::RIGHT_FACE, Block::RIGHT_FACE + 6);
+					addFace(Block::RIGHT_FACE, x, y, z);
 				}
 				if (block->getFace(BIT_FACE_FRONT)) {
-					verts.insert(verts.end(), Block::FRONT_FACE, Block::FRONT_FACE + 6);
+					addFace(Block::FRONT_FACE, x, y, z);
 				}
 				if (block->getFace(BIT_FACE_BACK)) {
-					verts.insert(verts.end(), Block::BACK_FACE, Block::BACK_FACE + 6);
+					addFace(Block::BACK_FACE, x, y, z);
 				}
 			}
 		}
