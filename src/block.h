@@ -9,6 +9,7 @@
 #define BIT_FACE_BACK 8
 #define BIT_FACE_RIGHT 16
 #define BIT_FACE_LEFT 32
+#define BIT_FACE_ALL (64 - 1)
 
 class Block {
 private:
