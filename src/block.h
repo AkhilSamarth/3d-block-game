@@ -13,16 +13,17 @@
 class Block {
 private:
 	std::string textureName;	// name of texture
-	glm::ivec3 pos;	// position of back, left, bottom corner (lowest x, y, z) along integer grid
+	glm::ivec3 pos;		// position of back, left, bottom corner (lowest x, y, z) along integer grid
 	unsigned char exposedFaces;		// bitmask for which faces are exposed
-
-	static unsigned int vaoId;	// VAO for a single block (cube)
-	static bool vaoInit;	// whether or not the block VAO has been created
-
-	static void initVao();	// initalize the VAO
 public:
+	// vertex arrays which contain data for each face
+	static const Vertex TOP_FACE[6];
+	static const Vertex BOTTOM_FACE[6];
+	static const Vertex FRONT_FACE[6];
+	static const Vertex BACK_FACE[6];
+	static const Vertex RIGHT_FACE[6];
+	static const Vertex LEFT_FACE[6];
+
 	Block(int x, int y, int z, std::string textureName);		// position set to (x, y, z), textureName must match key in textureMap
 	std::string getTextureName();	// returns the name of the texture of this block
-
-	static void bindVao();		// binds the block VAO
 };
