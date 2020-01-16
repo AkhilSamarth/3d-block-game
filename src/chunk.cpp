@@ -5,6 +5,23 @@
 
 std::map<uint32_t, Chunk*> Chunk::chunkList = std::map<uint32_t, Chunk*>();
 
+void Chunk::getChunkPosition(int globalX, int globalZ, int& chunkX, int& chunkZ) {
+	// two separate cases for positive and negative
+	if (globalX >= 0) {
+		chunkX = globalX - (globalX % CHUNK_SIZE);
+	}
+	else {
+		chunkX = globalX + (-globalX % CHUNK_SIZE) - CHUNK_SIZE;
+	}
+
+	if (globalZ >= 0) {
+		chunkZ = globalZ - (globalZ % CHUNK_SIZE);
+	}
+	else {
+		chunkZ = globalZ + (-globalZ % CHUNK_SIZE) - CHUNK_SIZE;
+	}
+}
+
 void Chunk::addBlock(int x, int y, int z, std::string textureName) {
 	// make sure block is in bounds vertically
 	if (y < 0 || y >= WORLD_HEIGHT) {
@@ -13,8 +30,9 @@ void Chunk::addBlock(int x, int y, int z, std::string textureName) {
 	}
 
 	// calculate correct chunk position
-	int chunkX = x - (x % CHUNK_SIZE);
-	int chunkZ = z - (z % CHUNK_SIZE);
+	int chunkX;
+	int chunkZ;
+	getChunkPosition(x, z, chunkX, chunkZ);
 
 	// calculate chunk index for map
 	uint32_t chunkIndex = getChunkIndex(chunkX, chunkZ);
@@ -34,8 +52,9 @@ void Chunk::addBlock(int x, int y, int z, std::string textureName) {
 
 void Chunk::removeBlock(int x, int y, int z) {
 	// calculate correct chunk position
-	int chunkX = x - (x % CHUNK_SIZE);
-	int chunkZ = z - (z % CHUNK_SIZE);
+	int chunkX;
+	int chunkZ;
+	getChunkPosition(x, z, chunkX, chunkZ);
 
 	// calculate chunk index for map
 	uint32_t chunkIndex = getChunkIndex(chunkX, chunkZ);
@@ -163,7 +182,6 @@ void Chunk::updateVerts() {
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int z = 0; z < CHUNK_SIZE; z++) {
 			for (int y = 0; y < WORLD_HEIGHT; y++) {
-				// if there's no block here, continue
 				Block* block;
 				if ((block = blocks[x][y][z]) == nullptr) {
 					continue;
