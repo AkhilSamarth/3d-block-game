@@ -18,15 +18,19 @@ private:
 	Chunk* neighborChunks[4];		// pointers to surrounding chunks in order (front, right, back, left)
 	glm::ivec3 pos;		// position of left, front corner (lowest x, z, y always 0) along integer grid (must be multiple of CHUNK_SIZE)
 	std::vector<Vertex> verts;	// all vertices of all faces which should be drawn of blocks in this chunk
-public:
-	static void addBlock(Block* block, int x, int y, int z);	// add block to correct chunk at position (x, y, z) in global coords
-	static Block* removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
-
-	Chunk(glm::ivec2 pos);	// create a chunk at the given (x, z)
-	glm::ivec3 getPosition();	// returns the position of this chunk
-	void generateBlocks();		// TODO: randomly generate blocks
+	bool updated;		// whether or not the block faces and verts of this chunk are up-to-date
+	
 	void updateBlockFaces();	// set which faces of each block are exposed
 	void updateVerts();		// update the verts vector with the correct vertices
+public:
+	static void addBlock(Block* block, int x, int y, int z);	// add block to correct chunk at position (x, y, z) in global coords
+	static void removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
+
+	Chunk(glm::ivec2 pos);	// create a chunk at the given (x, z)
+	~Chunk();
+	glm::ivec3 getPosition();	// returns the position of this chunk
+	void update();		// update the block faces and vertices of this chunk
+	bool isUpdated();	// whether or not the face/vertex data of this chunk is up to date
 	std::vector<Vertex> getVertices();		// return the vertices array
 	void addNeighbor(Chunk* chunk);		// add a neighboring chunk
 };

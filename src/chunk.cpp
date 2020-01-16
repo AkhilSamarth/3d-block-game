@@ -3,10 +3,50 @@
 #include "chunk.h"
 
 void Chunk::addBlock(Block* block, int x, int y, int z) {
+	// calculate correct chunk position
+	int chunkX = x - (x % CHUNK_SIZE);
+	int chunkZ = z - (z % CHUNK_SIZE);
 
+	// check if a chunk exists at the given position, if not create it
+	if (chunkList.find(glm::ivec2(chunkX, chunkZ)) == chunkList.end()) {
+		chunkList[glm::ivec2(chunkX, chunkZ)] = new Chunk(glm::ivec2(chunkX, chunkZ));
+	}
+
+	// add block to the right chunk
+	Chunk* chunk = chunkList[glm::ivec2(chunkX, chunkZ)];
+	chunk->blocks[x][y][z] = block;
+
+	// set update flag
+	chunk->updated = false;
 }
 
-Block* Chunk::removeBlock(int x, int y, int z) {}
+Block* Chunk::removeBlock(int x, int y, int z) {
+	// calculate correct chunk position
+	int chunkX = x - (x % CHUNK_SIZE);
+	int chunkZ = z - (z % CHUNK_SIZE);
+
+	// check if a chunk exists at the given position
+	if (chunkList.find(glm::ivec2(chunkX, chunkZ)) == chunkList.end()) {
+		std::cerr << "Chunk for block position (x: " << x << ", y: " << y << ", z: " << z << ") does not exist!" << std::endl;
+		return nullptr;
+	}
+
+	// get block if it exists
+	Chunk* chunk = chunkList[glm::ivec2(chunkX, chunkZ)];
+	Block* block = chunk->blocks[x][y][z];
+
+	if (block == nullptr) {
+		std::cerr << "No block found at position (x: " << x << ", y: " << y << ", z: " << z << ") does not exist!" << std::endl;
+		return nullptr;
+	}
+
+	chunk->blocks[x][y][z] = nullptr;
+
+	// set update flag
+	chunk->updated = false;
+
+	return block;
+}
 
 Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Vertex>()) {
 	// check position
@@ -24,7 +64,11 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 	chunkList[pos] = this;
 }
 
-void Chunk::generateBlocks() {}
+Chunk::~Chunk() {
+	// remove this chunk from the list
+	chunkList.erase(glm::ivec2(pos.x, pos.z));
+}
+
 
 void Chunk::updateBlockFaces() {
 	// loop through all chunk blocks
@@ -35,7 +79,7 @@ void Chunk::updateBlockFaces() {
 				// if this block exists, neighbor blocks have hidden faces
 				// if it doesn't exist, neighbor blocks have exposed faces
 				bool exposed = (blocks[x][y][z] == nullptr);
-				
+
 				// set status of neighbor blocks, if they exist
 				Block* neighbor;
 				if (x + 1 < CHUNK_SIZE && (neighbor = blocks[x + 1][y][z]) != nullptr) {
@@ -96,6 +140,28 @@ void Chunk::updateVerts() {
 			}
 		}
 	}
+}
+
+void Chunk::update() {
+	// call the two update functions
+	updateBlockFaces();
+	updateVerts();
+
+	// set update flag
+	updated = true;
+}
+
+bool Chunk::isUpdated() {
+	return updated;
+}
+
+std::vector<Vertex> Chunk::getVertices() {
+	// warn user if data is not up to date
+	if (!updated) {
+		std::cout << "Warning: vertex data of this chunk is not up to date" << std::endl;
+	}
+
+	return verts;
 }
 
 void Chunk::addNeighbor(Chunk* chunk) {
