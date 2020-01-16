@@ -6,6 +6,12 @@
 std::map<uint32_t, Chunk*> Chunk::chunkList = std::map<uint32_t, Chunk*>();
 
 void Chunk::addBlock(int x, int y, int z, std::string textureName) {
+	// make sure block is in bounds vertically
+	if (y < 0 || y >= WORLD_HEIGHT) {
+		std::cerr << "Attempted to add block out of bounds (y = " << y << ")." << std::endl;
+		return;
+	}
+
 	// calculate correct chunk position
 	int chunkX = x - (x % CHUNK_SIZE);
 	int chunkZ = z - (z % CHUNK_SIZE);
@@ -20,7 +26,7 @@ void Chunk::addBlock(int x, int y, int z, std::string textureName) {
 
 	// add block to the right chunk
 	Chunk* chunk = chunkList[chunkIndex];
-	chunk->blocks[x][y][z] = new Block(x - chunkX, y, z - chunkZ, textureName);
+	chunk->blocks[x - chunkX][y][z - chunkZ] = new Block(x - chunkX, y, z - chunkZ, textureName);
 
 	// set update flag
 	chunk->updated = false;
