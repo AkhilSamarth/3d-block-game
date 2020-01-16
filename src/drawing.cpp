@@ -80,4 +80,6 @@ void Shader::linkProgram() {
 	progInit = true;
 }
 
-void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {}
+void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
+	
+}

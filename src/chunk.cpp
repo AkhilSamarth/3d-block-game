@@ -78,6 +78,20 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 
 	// add to chunkList
 	chunkList[getChunkIndex(pos.x, pos.y)] = this;
+
+	// generate vao and set attributes
+	glGenVertexArrays(1, &vaoId);
+	glGenBuffers(1, &bufferId);
+
+	// bind buffer to vao
+	glBindVertexArray(vaoId);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+
+	// set vertex attribs
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) 3);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
 }
 
 Chunk::~Chunk() {
@@ -158,15 +172,21 @@ void Chunk::updateVerts() {
 	}
 }
 
+void Chunk::updateBuffer() {
+	// update buffer with verts
+	glNamedBufferData(bufferId, verts.size() * sizeof(Vertex), &verts[0], GL_DYNAMIC_DRAW);
+}
+
 void Chunk::update() {
 	// don't do anything if update isn't needed
 	if (updated) {
 		return;
 	}
 
-	// call the two update functions
+	// call the update functions
 	updateBlockFaces();
 	updateVerts();
+	updateBuffer();
 
 	// set update flag
 	updated = true;
@@ -180,13 +200,13 @@ glm::ivec3 Chunk::getPosition() {
 	return pos;
 }
 
-std::vector<Vertex> Chunk::getVertices() {
+unsigned int Chunk::getVaoId() {
 	// warn user if data is not up to date
 	if (!updated) {
 		std::cout << "Warning: vertex data of this chunk is not up to date" << std::endl;
 	}
 
-	return verts;
+	return vaoId;
 }
 
 void Chunk::addNeighbor(Chunk* chunk) {

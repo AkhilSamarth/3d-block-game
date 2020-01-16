@@ -19,9 +19,11 @@ private:
 	glm::ivec3 pos;		// position of left, front corner (lowest x, z, y always 0) along integer grid (must be multiple of CHUNK_SIZE)
 	std::vector<Vertex> verts;	// all vertices of all faces which should be drawn of blocks in this chunk
 	bool updated;		// whether or not the block faces and verts of this chunk are up-to-date
-	
+	unsigned int vaoId, bufferId;		// id of the vao that holds this chunk
+
 	void updateBlockFaces();	// set which faces of each block are exposed
 	void updateVerts();		// update the verts vector with the correct vertices
+	void updateBuffer();		// update this chunk's buffer
 public:
 	static void addBlock(int x, int y, int z, std::string textureName);	// add block to correct chunk at position (x, y, z) in global coords
 	static void removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
@@ -36,6 +38,5 @@ public:
 	bool isUpdated();	// whether or not the face/vertex data of this chunk is up to date
 
 	glm::ivec3 getPosition();	// returns the position of this chunk
-	std::vector<Vertex> getVertices();		// return the vertices array
-	
+	unsigned int getVaoId();		// return the vertices array
 };
