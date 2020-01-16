@@ -80,27 +80,4 @@ void Shader::linkProgram() {
 	progInit = true;
 }
 
-void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& camMatrix, std::string texture) {
-	glUseProgram(shaderId);	// activate shader
-
-	// send camera matrix
-	unsigned int camLoc = glGetUniformLocation(shaderId, "camera");
-	glUniformMatrix4fv(camLoc, 1, GL_FALSE, glm::value_ptr(camMatrix));
-
-	// find model location
-	unsigned int modelLoc = glGetUniformLocation(shaderId, "model");
-
-	// bind block VAO
-	Block::bindVao();
-
-	// bind texture
-	bindTexture(texture, shaderId);
-
-	// loop through blocks
-	for (auto& block : blocks) {
-		// send model matrix
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(block.getModelMatrix()));
-
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-	}
-}
+void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {}

@@ -3,8 +3,6 @@
 #include <string>
 #include <glm/glm.hpp>
 
-#include "drawing.h"
-
 #define BIT_FACE_TOP 1
 #define BIT_FACE_BOTTOM 2
 #define BIT_FACE_FRONT 4
@@ -12,6 +10,9 @@
 #define BIT_FACE_RIGHT 16
 #define BIT_FACE_LEFT 32
 #define BIT_FACE_ALL (64 - 1)
+
+// forward declare Vertex
+struct Vertex;
 
 class Block {
 private:

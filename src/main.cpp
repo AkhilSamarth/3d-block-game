@@ -78,9 +78,7 @@ int main(void)
 
 		// get camera matrix
 		glm::mat4 camMatrix = Camera::getActiveCam()->getMatrix();
-
-		drawBlocks(blocks, shader.getProgramId(), camMatrix, "test");
-
+		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
