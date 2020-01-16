@@ -11,6 +11,8 @@
 #include "camera.h"
 #include "game.h"
 
+#define FPS_COUNTER_INTERVAL 0.5	// how often (in seconds) to print FPS
+
 static const bool showFPS = true;	// whether or not to print the FPS
 
 int main(void)
@@ -50,8 +52,8 @@ int main(void)
 
 	// test blocks
 	std::vector<Block> blocks;
-	for (int i = 0; i < 100; i++) {
-		for (int j = 0; j < 100; j++) {
+	for (int i = 0; i < 40; i++) {
+		for (int j = 0; j < 40; j++) {
 			blocks.push_back(Block(i, 0, -j, "test"));
 		}
 	}
@@ -63,10 +65,13 @@ int main(void)
 	// start game loop
 	std::thread gameThread(startGame, window);
 
+	// timer for fps counter
+	double fpsTimer = glfwGetTime();
+
 	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window))
-	{
-		double lastTime = glfwGetTime();		// start timer
+	while (!glfwWindowShouldClose(window)) {
+		double renderStartTime = glfwGetTime();		// used to calculate how long each cycle of render loop took
+
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -75,14 +80,15 @@ int main(void)
 		glm::mat4 camMatrix = Camera::getActiveCam()->getMatrix();
 
 		drawBlocks(blocks, shader.getProgramId(), camMatrix, "test");
-		
-		// update FPS timer if needed
-		if (showFPS) {
-			printf("FPS: %f, 1/FPS: %f\n", 1.0f / ((glfwGetTime() - lastTime)), (glfwGetTime() - lastTime));
-		}
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
+
+		// update FPS timer if needed
+		if (showFPS && (glfwGetTime() - fpsTimer >= FPS_COUNTER_INTERVAL)) {
+			printf("FPS: %f, sec per frame (1/FPS): %f\n", 1.0f / ((glfwGetTime() - renderStartTime)), (glfwGetTime() - renderStartTime));
+			fpsTimer = glfwGetTime();
+		}
 
 		/* Poll for and process events */
 		glfwPollEvents();
