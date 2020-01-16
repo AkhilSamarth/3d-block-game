@@ -85,8 +85,12 @@ void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
 	glUseProgram(shaderId);
 
 	// get the chunk list and loop through it
-	std::map<uint32_t, Chunk*> chunkList = Chunk::getChunks();
-	for (auto entry = chunkList.begin(); entry != chunkList.end(); entry++) {
-		Chunk*
+	for (auto entry = Chunk::chunkList.begin(); entry != Chunk::chunkList.end(); entry++) {
+		Chunk* chunk = entry->second;	// current chunk
+
+		// bind vao and draw
+		glBindVertexArray(chunk->getVaoId());
+
+		glDrawArrays(GL_TRIANGLES, 0, chunk->getVertexCount());
 	}
 }

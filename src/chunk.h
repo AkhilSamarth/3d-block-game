@@ -38,4 +38,5 @@ public:
 
 	glm::ivec3 getPosition();	// returns the position of this chunk
 	unsigned int getVaoId();		// return the vertices array
+	int getVertexCount();		// returns the total number of vertices of this chunk's vao
 };
