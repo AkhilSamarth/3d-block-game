@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <map>
 #include <glm/glm.hpp>
 
 #define BIT_FACE_TOP 1
@@ -11,6 +12,8 @@
 #define BIT_FACE_LEFT 32
 #define BIT_FACE_ALL (64 - 1)
 
+#define BLOCK_TEXTURE_SIZE 64	// number of pixels in one block in the spritesheet
+
 // forward declare Vertex
 struct Vertex;
 
@@ -19,6 +22,9 @@ private:
 	std::string textureName;	// name of texture
 	glm::ivec3 pos;		// position of left, bottom, front corner (lowest x, y, z) along integer grid
 	unsigned char exposedFaces;		// 1 byte bitmask for which faces are exposed
+
+	static std::map<std::string, glm::ivec2> blockOffsets;		// maps texture names to their offsets in the block spritesheet
+	static const unsigned int SPRITE_ID;	// texture id of the block spritesheet
 public:
 	// vertex arrays which contain data for each face
 	static const Vertex TOP_FACE[6];

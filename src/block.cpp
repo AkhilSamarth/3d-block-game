@@ -5,6 +5,11 @@
 
 #include "block.h"
 #include "drawing.h"
+#include "texture.h"
+
+std::map<std::string, glm::ivec2> Block::blockOffsets = std::map<std::string, glm::ivec2>();
+
+const unsigned int Block::SPRITE_ID = loadTexture("assetts/textures/block_sprite.png", "block sprites");
 
 // fill data arrays for a block that's centered at (0, 0, 0)
 // arranged as:
