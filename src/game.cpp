@@ -4,7 +4,6 @@
 
 #include "game.h"
 #include "camera.h"
-#include "chunk.h"
 
 #define MOUSE_SENS 0.08		// mouse sensitivity
 #define MOVE_SPEED 5		// speed on key presses (units per second)
@@ -62,10 +61,7 @@ static void startGameHelper(GLFWwindow* window) {
 	// keep running until window should close (same as rendering loop)
 	while (!glfwWindowShouldClose(window)) {
 		float loopStartTime = glfwGetTime();	// used to update delta
-
 		processKeys(window, delta);
-
-		printf("test\n");
 	
 		delta = glfwGetTime() - loopStartTime;
 	}
