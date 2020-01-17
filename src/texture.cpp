@@ -26,7 +26,7 @@ void bindTexture(std::string name, unsigned int shaderId) {
 	glUniform1i(glGetUniformLocation(shaderId, "texture"), 0);
 }
 
-void loadTexture(std::string path, std::string name) {
+unsigned int loadTexture(std::string path, std::string name) {
 	// load image
 	int width, height, channels;
 	stbi_set_flip_vertically_on_load(true);		// makes sure the image is the right way up
@@ -49,4 +49,6 @@ void loadTexture(std::string path, std::string name) {
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(data);
+
+	return textureId;
 }
