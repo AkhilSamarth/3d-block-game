@@ -116,23 +116,27 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 
 	// check if neighbors exist, and if so, create a connection to them
 	Chunk* neighbor;
-	if ((neighbor = chunkList[getChunkIndex(pos.x, pos.y - 1)]) != nullptr) {
+	if (chunkList.find(getChunkIndex(pos.x, pos.y - 1)) != chunkList.end()) {
 		// front
+		neighbor = chunkList[getChunkIndex(pos.x, pos.y - 1)];
 		neighborChunks[0] = neighbor;
 		neighbor->addNeighbor(this);
 	}
-	if ((neighbor = chunkList[getChunkIndex(pos.x + 1, pos.y)]) != nullptr) {
+	if (chunkList.find(getChunkIndex(pos.x + 1, pos.y)) != chunkList.end()) {
 		// right
+		neighbor = chunkList[getChunkIndex(pos.x + 1, pos.y)];
 		neighborChunks[1] = neighbor;
 		neighbor->addNeighbor(this);
 	}
-	if ((neighbor = chunkList[getChunkIndex(pos.x, pos.y + 1)]) != nullptr) {
+	if (chunkList.find(getChunkIndex(pos.x, pos.y + 1)) != chunkList.end()) {
 		// back
+		neighbor = chunkList[getChunkIndex(pos.x, pos.y + 1)];
 		neighborChunks[2] = neighbor;
 		neighbor->addNeighbor(this);
 	}
-	if ((neighbor = chunkList[getChunkIndex(pos.x - 1, pos.y - 1)]) != nullptr) {
+	if (chunkList.find(getChunkIndex(pos.x - 1, pos.y)) != chunkList.end()) {
 		// left
+		neighbor = chunkList[getChunkIndex(pos.x - 1, pos.y)];
 		neighborChunks[3] = neighbor;
 		neighbor->addNeighbor(this);
 	}
