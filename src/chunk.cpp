@@ -5,6 +5,22 @@
 
 std::map<uint32_t, Chunk*> Chunk::chunkList = std::map<uint32_t, Chunk*>();
 
+void Chunk::updateChunksByNeighbor(Chunk* start) {}
+
+void Chunk::updateAllChunks() {
+	// loop through chunklist
+	for (auto entry = chunkList.begin(); entry != chunkList.end(); entry++) {
+		Chunk* chunk = entry->second;
+		// check for null chunks
+		if (chunk == nullptr) {
+			std::cerr << "Warning: null chunk found in chunkList" << std::endl;
+			continue;
+		}
+
+		chunk->update();
+	}
+}
+
 void Chunk::getChunkPosition(int globalX, int globalZ, int& chunkX, int& chunkZ) {
 	// two separate cases for positive and negative
 	if (globalX >= 0) {

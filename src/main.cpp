@@ -12,7 +12,7 @@
 #include "game.h"
 #include "chunk.h"
 
-#define SHOW_FPS true
+#define SHOW_FPS false
 #define FPS_COUNTER_INTERVAL 0.5	// how often (in seconds) to print FPS
 
 int main(void)
@@ -58,11 +58,8 @@ int main(void)
 			}
 		}
 	}
-
-	// update chunks
-	for (auto i = Chunk::chunkList.begin(); i != Chunk::chunkList.end(); i++) {
-		i->second->update();
-	}
+	
+	Chunk::updateAllChunks();
 
 	// create and activate camera
 	Camera cam;

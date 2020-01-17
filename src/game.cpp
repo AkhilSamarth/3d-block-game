@@ -63,6 +63,8 @@ static void startGameHelper(GLFWwindow* window) {
 		float loopStartTime = glfwGetTime();	// used to update delta
 		processKeys(window, delta);
 	
+
+
 		delta = glfwGetTime() - loopStartTime;
 	}
 }
