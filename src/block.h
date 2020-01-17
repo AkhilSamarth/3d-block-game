@@ -12,10 +12,10 @@
 #define BIT_FACE_LEFT 32
 #define BIT_FACE_ALL (64 - 1)
 
-#define BLOCK_SPRITE_NAME "block sprites"	
-#define BLOCK_SPRITE_WIDTH 128	// width of spritesheet
-#define BLOCK_SPRITE_HEIGHT 64	// height of spritesheet
 #define BLOCK_SPRITE_UNIT 64	// height/width of one block in the spritesheet
+
+#define BLOCK_SPRITE_NAME "block sprites"
+#define BLOCK_SPRITE_PATH "assetts/textures/block_sprite.png"
 
 // forward declare Vertex
 struct Vertex;
@@ -26,8 +26,8 @@ private:
 	glm::ivec3 pos;		// position of left, bottom, front corner (lowest x, y, z) along integer grid
 	unsigned char exposedFaces;		// 1 byte bitmask for which faces are exposed
 
-	static bool spriteLoaded;		// whether or not the spritesheet has been loaded
-	static void loadSpritesheet();	// load the spritesheet
+	static bool spriteLoaded;	// whether or not the spritesheet has been loaded
+	static int spriteWidth, spriteHeight;	// dimensions of sprite sheet
 	static std::map<std::string, glm::ivec2> blockOffsets;		// maps texture names to their offsets in the block spritesheet
 public:
 	// vertex arrays which contain data for each face
@@ -40,7 +40,10 @@ public:
 
 	static void addBlockTextureOffset(std::string name, int uOffset, int vOffset);	// add a block texture name along with its offset in the spritesheet
 	static glm::ivec2 getBlockTextureOffset(std::string name);	// returns the right offset from the map
+	static void loadSpritesheet();	// load the spritesheet
 	static void bindSpritesheet(unsigned int shaderId);		// binds the block spritesheet
+	static int getSpriteWidth();	// returns the width of the spritesheet
+	static int getSpriteHeight();	// returns the height of the spritesheet
 
 	Block(int x, int y, int z, std::string textureName);		// position set to (x, y, z), textureName must match key in textureMap
 	std::string getTextureName();	// returns the name of the texture of this block

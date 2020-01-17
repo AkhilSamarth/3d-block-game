@@ -44,6 +44,7 @@ int main(void)
 	// add block texture
 	Block::addBlockTextureOffset("test", 0, 0);
 	Block::addBlockTextureOffset("testInv", 1, 0);
+	Block::loadSpritesheet();
 
 	// create shader program
 	Shader shader;

@@ -320,8 +320,8 @@ void Chunk::updateBlockFaces() {
 
 void Chunk::addFace(const Vertex* face, int x, int y, int z, int uOffset, int vOffset) {
 	// calculate the size of a single block in spritesheet coordinates
-	static const float BLOCK_SIZE_X = 1.0f * BLOCK_SPRITE_UNIT / BLOCK_SPRITE_WIDTH;
-	static const float BLOCK_SIZE_Y = 1.0f * BLOCK_SPRITE_UNIT / BLOCK_SPRITE_HEIGHT;
+	static const float BLOCK_SIZE_X = 1.0f * BLOCK_SPRITE_UNIT / Block::getSpriteWidth();
+	static const float BLOCK_SIZE_Y = 1.0f * BLOCK_SPRITE_UNIT / Block::getSpriteHeight();
 
 	// loop through all 6 verts of this face
 	for (const Vertex* vertPtr = face; vertPtr < face + 6; vertPtr++) {
