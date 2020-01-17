@@ -74,7 +74,7 @@ void Chunk::getChunkPosition(int globalX, int globalZ, int& chunkX, int& chunkZ)
 	}
 }
 
-void Chunk::addBlock(int x, int y, int z, std::string textureName) {
+void Chunk::addBlock(int x, int y, int z, std::string textures[6]) {
 	// make sure block is in bounds vertically
 	if (y < 0 || y >= WORLD_HEIGHT) {
 		std::cerr << "Attempted to add block out of bounds (y = " << y << ")." << std::endl;
@@ -96,11 +96,17 @@ void Chunk::addBlock(int x, int y, int z, std::string textureName) {
 
 	// add block to the right chunk
 	Chunk* chunk = chunkList[chunkIndex];
-	chunk->blocks[x - chunkX][y][z - chunkZ] = new Block(x - chunkX, y, z - chunkZ, textureName);
+	chunk->blocks[x - chunkX][y][z - chunkZ] = new Block(x - chunkX, y, z - chunkZ, textures);
 
 	// set update flags
 	chunk->dataUpdated = false;
 	chunk->bufferUpdated = false;
+}
+
+void Chunk::addBlock(int x, int y, int z, std::string texture) {
+	// use other constructor
+	std::string textures[6] = {texture, texture, texture, texture, texture, texture};
+	addBlock(x, y, z, textures);
 }
 
 void Chunk::removeBlock(int x, int y, int z) {
