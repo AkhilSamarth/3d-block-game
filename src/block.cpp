@@ -11,8 +11,6 @@
 
 std::map<std::string, glm::ivec2> Block::blockOffsets = std::map<std::string, glm::ivec2>();
 
-const unsigned int Block::SPRITE_ID = loadTexture("assetts/textures/block_sprite.png", BLOCK_SPRITE_NAME);
-
 // fill data arrays for a block that's centered at (0, 0, 0)
 // arranged as:
 //			position				texture coords
@@ -70,13 +68,23 @@ const Vertex Block::LEFT_FACE[6] = {
 			-0.5, -0.5, -0.5,		0, 0,
 			-0.5, -0.5, 0.5,		1, 0};
 
+bool Block::spriteLoaded = false;
+
+void Block::loadSpritesheet() {
+	loadTexture("assetts/textures/block_sprite.png", BLOCK_SPRITE_NAME);
+	spriteLoaded = true;
+}
+
 void Block::addBlockTexture(std::string name, int xOffset, int yOffset) {
 	blockOffsets[name] = glm::ivec2(xOffset, yOffset);
 }
 
 void Block::bindSpritesheet(unsigned int shaderId) {
-	//bindTexture(BLOCK_SPRITE_NAME, shaderId);
-	bindTexture("test", shaderId);
+	// load spritesheet if needed
+	if (!spriteLoaded) {
+		loadSpritesheet();
+	}
+	bindTexture(BLOCK_SPRITE_NAME, shaderId);
 }
 
 Block::Block(int x, int y, int z, std::string textureName) : textureName(textureName), pos(glm::vec3(x, y, z)), exposedFaces(0) {}

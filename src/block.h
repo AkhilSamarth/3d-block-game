@@ -23,8 +23,9 @@ private:
 	glm::ivec3 pos;		// position of left, bottom, front corner (lowest x, y, z) along integer grid
 	unsigned char exposedFaces;		// 1 byte bitmask for which faces are exposed
 
+	static bool spriteLoaded;		// whether or not the spritesheet has been loaded
+	static void loadSpritesheet();	// load the spritesheet
 	static std::map<std::string, glm::ivec2> blockOffsets;		// maps texture names to their offsets in the block spritesheet
-	static const unsigned int SPRITE_ID;	// texture id of the block spritesheet
 public:
 	// vertex arrays which contain data for each face
 	static const Vertex TOP_FACE[6];
