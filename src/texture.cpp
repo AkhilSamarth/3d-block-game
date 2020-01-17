@@ -5,13 +5,19 @@
 
 #include "texture.h"
 
+std::map<std::string, unsigned int>& getTextureMap() {
+	// done like this instead of global var to make sure it exists at first use
+	static std::map<std::string, unsigned int> textureMap;
+	return textureMap;
+}
+
 unsigned int getTextureId(std::string name) {
-	if (textureMap.find(name) == textureMap.end()) {
+	if (getTextureMap().find(name) == getTextureMap().end()) {
 		std::cerr << "Texture not found." << std::endl;
 		return 0;
 	}
 
-	return textureMap[name];
+	return getTextureMap()[name];
 }
 
 void bindTexture(std::string name, unsigned int shaderId) {
@@ -37,7 +43,7 @@ unsigned int loadTexture(std::string path, std::string name) {
 	glGenTextures(1, &textureId);
 
 	// add id to map
-	textureMap[name] = textureId;
+	getTextureMap()[name] = textureId;
 
 	// bind texture and set parameters
 	glBindTexture(GL_TEXTURE_2D, textureId);
@@ -46,7 +52,6 @@ unsigned int loadTexture(std::string path, std::string name) {
 
 	// fill with data
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(data);
 

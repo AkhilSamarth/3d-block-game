@@ -35,6 +35,7 @@ public:
 	static const Vertex LEFT_FACE[6];
 
 	static void addBlockTexture(std::string name, int xOffset, int yOffset);	// add a block texture name along with its offset in the spritesheet
+	static void bindSpritesheet(unsigned int shaderId);		// binds the block spritesheet
 
 	Block(int x, int y, int z, std::string textureName);		// position set to (x, y, z), textureName must match key in textureMap
 	std::string getTextureName();	// returns the name of the texture of this block

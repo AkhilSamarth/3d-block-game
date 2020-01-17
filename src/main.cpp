@@ -42,6 +42,9 @@ int main(void)
 	glEnable(GL_CULL_FACE);
 
 	// add block texture
+	Block::addBlockTexture("test", 0, 0);
+	Block::addBlockTexture("testInv", 1, 0);
+	loadTexture("assetts/textures/test.png", "test");
 
 	// create shader program
 	Shader shader;
