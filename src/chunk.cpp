@@ -365,26 +365,32 @@ void Chunk::updateVerts() {
 					continue;
 				}
 
-				// get texture offset to give to addFace
-				glm::ivec2 textureOffset = Block::getBlockTextureOffset(block->textures[0]);
+				// this texture's position in the spritesheet
+				glm::ivec2 textureOffset;
 
 				// add exposed faces
 				if (block->getFace(BIT_FACE_TOP)) {
+					textureOffset = Block::getBlockTextureOffset(block->textures[0]);
 					addFace(Block::TOP_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_BOTTOM)) {
+					textureOffset = Block::getBlockTextureOffset(block->textures[1]);
 					addFace(Block::BOTTOM_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_LEFT)) {
+					textureOffset = Block::getBlockTextureOffset(block->textures[2]);
 					addFace(Block::LEFT_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_RIGHT)) {
+					textureOffset = Block::getBlockTextureOffset(block->textures[3]);
 					addFace(Block::RIGHT_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_FRONT)) {
+					textureOffset = Block::getBlockTextureOffset(block->textures[4]);
 					addFace(Block::FRONT_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_BACK)) {
+					textureOffset = Block::getBlockTextureOffset(block->textures[5]);
 					addFace(Block::BACK_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 			}

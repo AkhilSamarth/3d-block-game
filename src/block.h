@@ -46,7 +46,7 @@ public:
 
 	Block(int x, int y, int z, std::string textures[6]);		// position set to (x, y, z)
 	Block(int x, int y, int z, std::string texture);		// position set to (x, y, z), texture applied to all sides
-	std::string textures[6];	// name of textures for (in order): front, right, back, left, top, bottom
+	std::string textures[6];	// name of textures for (in order): top, bottom, left, right, front, back
 
 	void setFace(unsigned char bits);		// sets which faces are exposed (e.g. setFaces(BIT_FACE_TOP | BIT_FACE_FRONT))
 	void resetFace(unsigned char bits);		// sets which faces are not exposed (see example above)
