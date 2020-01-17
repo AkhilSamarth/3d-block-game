@@ -1,11 +1,33 @@
 #include <iostream>
+#include <queue>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "chunk.h"
 
 std::map<uint32_t, Chunk*> Chunk::chunkList = std::map<uint32_t, Chunk*>();
 
-void Chunk::updateChunksByNeighbor(Chunk* start) {}
+void Chunk::updateChunksByNeighbor(Chunk* start) {
+	// queue containing all chunks that need to be updated
+	std::queue<Chunk*> chunksToGo = std::queue<Chunk*>();
+	chunksToGo.push(start);
+
+	while (!chunksToGo.empty()) {
+		// process next chunk waiting in queue
+		Chunk* current = chunksToGo.front();
+		chunksToGo.pop();
+		printf("processing (%d, %d)\n", current->getPosition().x, current->getPosition().z);
+		current->updateData();
+
+		// add neighbors to queue
+		for (int i = 0; i < 4; i++) {
+			Chunk* neighbor = current->neighborChunks[i];
+			if (neighbor != nullptr) {
+				chunksToGo.push(neighbor);
+			}
+		}
+	}
+
+}
 
 void Chunk::updateAllChunks() {
 	// loop through chunklist

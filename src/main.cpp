@@ -54,12 +54,14 @@ int main(void)
 	for (int i = 0; i < 500; i++) {
 		for (int j = 0; j < 500; j++) {
 			for (int k = 1; k < 2; k++) {
+				//Chunk::addBlock(i - 250, k, -j, "test");
 				Chunk::addBlock(i, k, j, "test");
 			}
 		}
 	}
 	
-	Chunk::updateAllChunks();
+	//std::thread chunkLoader = std::thread(Chunk::updateChunksByNeighbor, Chunk::chunkList[Chunk::getChunkIndex(0, 0)]);
+	Chunk::updateChunksByNeighbor(Chunk::chunkList[Chunk::getChunkIndex(0, 0)]);
 
 	// create and activate camera
 	Camera cam;
@@ -100,6 +102,8 @@ int main(void)
 	// wait for game loop to end
 	gameThread->join();
 	delete gameThread;
+
+	//chunkLoader.join();
 
 	glfwTerminate();
 	return 0;
