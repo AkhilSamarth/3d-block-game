@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <set>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "chunk.h"
@@ -11,6 +12,10 @@ void Chunk::updateChunksByNeighbor(Chunk* start) {
 	std::queue<Chunk*> chunksToGo = std::queue<Chunk*>();
 	chunksToGo.push(start);
 
+	// set which ensures that chunks aren't added twice to the queue
+	std::set<Chunk*> chunkSet = std::set<Chunk*>();
+	chunkSet.insert(start);
+
 	while (!chunksToGo.empty()) {
 		// process next chunk waiting in queue
 		Chunk* current = chunksToGo.front();
@@ -20,12 +25,12 @@ void Chunk::updateChunksByNeighbor(Chunk* start) {
 		// add unupdated neighbors to queue
 		for (int i = 0; i < 4; i++) {
 			Chunk* neighbor = current->neighborChunks[i];
-			if (neighbor != nullptr && !neighbor->dataUpdated) {
+			if (neighbor != nullptr && !neighbor->dataUpdated && (chunkSet.find(neighbor) == chunkSet.end())) {
 				chunksToGo.push(neighbor);
+				chunkSet.insert(neighbor);
 			}
 		}
 	}
-
 }
 
 void Chunk::updateAllChunks() {
