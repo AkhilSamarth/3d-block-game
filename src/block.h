@@ -22,7 +22,6 @@ struct Vertex;
 
 class Block {
 private:
-	std::string textureName;	// name of texture
 	glm::ivec3 pos;		// position of left, bottom, front corner (lowest x, y, z) along integer grid
 	unsigned char exposedFaces;		// 1 byte bitmask for which faces are exposed
 
@@ -45,8 +44,8 @@ public:
 	static int getSpriteWidth();	// returns the width of the spritesheet
 	static int getSpriteHeight();	// returns the height of the spritesheet
 
-	Block(int x, int y, int z, std::string textureName);		// position set to (x, y, z), textureName must match key in textureMap
-	std::string getTextureName();	// returns the name of the texture of this block
+	Block(int x, int y, int z, std::string texture);		// position set to (x, y, z), texture is applied to all sides by default
+	std::string textures[6];	// name of textures for (in order): front, right, back, left, top, bottom
 
 	void setFace(unsigned char bits);		// sets which faces are exposed (e.g. setFaces(BIT_FACE_TOP | BIT_FACE_FRONT))
 	void resetFace(unsigned char bits);		// sets which faces are not exposed (see example above)

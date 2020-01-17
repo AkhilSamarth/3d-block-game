@@ -360,7 +360,7 @@ void Chunk::updateVerts() {
 				}
 
 				// get texture offset to give to addFace
-				glm::ivec2 textureOffset = Block::getBlockTextureOffset(block->getTextureName());
+				glm::ivec2 textureOffset = Block::getBlockTextureOffset(block->textures[0]);
 
 				// add exposed faces
 				if (block->getFace(BIT_FACE_TOP)) {
