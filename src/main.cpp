@@ -51,13 +51,19 @@ int main(void)
 	shader.linkProgram();
 	
 	// test blocks
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			for (int k = 1; k < 2; k++) {
+	for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < 16; j++) {
+			for (int k = 0; k < WORLD_HEIGHT; k++) {
 				Chunk::addBlock(i, k, j, "test");
 			}
 		}
 	}
+	Chunk::removeBlock(5, 1, 6);
+	Chunk::removeBlock(5, 0, 6);
+	Chunk::removeBlock(0, 0, 0);
+	Chunk::removeBlock(5, 31, 6);
+	Chunk::removeBlock(5, 30, 6);
+	Chunk::removeBlock(0, 31, 0);
 	
 	std::thread chunkLoader = std::thread(Chunk::updateChunksByNeighbor, Chunk::chunkList[Chunk::getChunkIndex(0, 0)]);
 

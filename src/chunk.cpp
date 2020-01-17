@@ -123,7 +123,7 @@ void Chunk::removeBlock(int x, int y, int z) {
 	Block* block = chunk->blocks[x - chunkX][y][z - chunkZ];
 
 	if (block == nullptr) {
-		std::cerr << "No block found at position (x: " << x << ", y: " << y << ", z: " << z << ") does not exist!" << std::endl;
+		std::cerr << "No block found at position (x: " << x << ", y: " << y << ", z: " << z << ")" << std::endl;
 		return;
 	}
 
@@ -145,7 +145,6 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 	if (pos.x % CHUNK_SIZE != 0 || pos.y % CHUNK_SIZE != 0) {
 		std::cerr << "Invalid chunk position (x: " << pos.x << ", z: " << pos.y << ") given!" << std::endl;
 		std::cerr << "This chunk will not work as expected!" << std::endl;
-
 		return;
 	}
 
@@ -234,6 +233,18 @@ void Chunk::updateBlockFaces() {
 				}
 				if (z - 1 >= 0 && (neighbor = blocks[x][y][z - 1]) != nullptr) {
 					neighbor->boolFace(BIT_FACE_BACK, exposed);
+				}
+
+				// if this is the top or bottom, expose top/bottom face
+				if (y == 0) {
+					if (blocks[x][y][z] != nullptr) {
+						blocks[x][y][z]->setFace(BIT_FACE_BOTTOM);
+					}
+				}
+				else if (y == WORLD_HEIGHT - 1) {
+					if (blocks[x][y][z] != nullptr) {
+						blocks[x][y][z]->setFace(BIT_FACE_TOP);
+					}
 				}
 			}
 		}
