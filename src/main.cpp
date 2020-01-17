@@ -12,7 +12,7 @@
 #include "game.h"
 #include "chunk.h"
 
-#define SHOW_FPS false
+#define SHOW_FPS true
 #define FPS_COUNTER_INTERVAL 0.5	// how often (in seconds) to print FPS
 
 int main(void)
@@ -51,8 +51,8 @@ int main(void)
 	shader.linkProgram();
 	
 	// test blocks
-	for (int i = 0; i < 50; i++) {
-		for (int j = 0; j < 50; j++) {
+	for (int i = 0; i < 500; i++) {
+		for (int j = 0; j < 500; j++) {
 			for (int k = 1; k < 2; k++) {
 				Chunk::addBlock(i, k, j, "test");
 			}

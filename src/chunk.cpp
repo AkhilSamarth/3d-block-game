@@ -17,7 +17,7 @@ void Chunk::updateAllChunks() {
 			continue;
 		}
 
-		chunk->update();
+		chunk->updateData();
 	}
 }
 
@@ -72,8 +72,9 @@ void Chunk::addBlock(int x, int y, int z, std::string textureName) {
 	Chunk* chunk = chunkList[chunkIndex];
 	chunk->blocks[x - chunkX][y][z - chunkZ] = new Block(x - chunkX, y, z - chunkZ, textureName);
 
-	// set update flag
-	chunk->updated = false;
+	// set update flags
+	chunk->dataUpdated = false;
+	chunk->bufferUpdated = false;
 }
 
 void Chunk::removeBlock(int x, int y, int z) {
@@ -104,8 +105,9 @@ void Chunk::removeBlock(int x, int y, int z) {
 	chunk->blocks[x - chunkX][y][z - chunkZ] = nullptr;
 	delete block;
 
-	// set update flag
-	chunk->updated = false;
+	// set update flags
+	chunk->dataUpdated = false;
+	chunk->bufferUpdated = false;
 }
 
 uint32_t Chunk::getChunkIndex(int x, int z) {
@@ -270,6 +272,17 @@ void Chunk::updateVerts() {
 }
 
 void Chunk::updateBuffer() {
+	// if buffer is up to date, do nothing
+	if (bufferUpdated) {
+		return;
+	}
+
+	// if data hasn't been updated, warn user and stop
+	if (!dataUpdated) {
+		std::cerr << "Attempted to update buffer without updating data." << std::endl;
+		return;
+	}
+
 	// if verts is empty, continue
 	if (verts.empty()) {
 		return;
@@ -277,6 +290,9 @@ void Chunk::updateBuffer() {
 
 	// update buffer with verts
 	glNamedBufferData(bufferId, verts.size() * sizeof(Vertex), &verts[0], GL_DYNAMIC_DRAW);
+
+	// update flag
+	bufferUpdated = true;
 }
 
 void Chunk::addNeighbor(Chunk* chunk) {
@@ -309,16 +325,15 @@ void Chunk::addNeighbor(Chunk* chunk) {
 	}
 }
 
-void Chunk::update() {
+void Chunk::updateData() {
 	// don't do anything if update isn't needed
-	if (updated) {
+	if (dataUpdated) {
 		return;
 	}
 
 	// call the update functions
 	updateBlockFaces();
 	updateVerts();
-	updateBuffer();
 
 	// if verts is empty, no need to do anything with this chunk
 	if (verts.empty()) {
@@ -326,11 +341,15 @@ void Chunk::update() {
 	}
 
 	// set update flag
-	updated = true;
+	dataUpdated = true;
 }
 
-bool Chunk::isUpdated() {
-	return updated;
+bool Chunk::isDataUpdated() {
+	return dataUpdated;
+}
+
+bool Chunk::isBufferUpdated() {
+	return bufferUpdated;
 }
 
 glm::ivec3 Chunk::getPosition() {
@@ -339,8 +358,8 @@ glm::ivec3 Chunk::getPosition() {
 
 unsigned int Chunk::getVaoId() {
 	// warn user if data is not up to date
-	if (!updated) {
-		std::cout << "Warning: vertex data of this chunk is not up to date" << std::endl;
+	if (!dataUpdated || !bufferUpdated) {
+		std::cout << "Warning: this chunk is not up to date" << std::endl;
 	}
 
 	return vaoId;

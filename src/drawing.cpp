@@ -105,9 +105,12 @@ void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
 		Chunk* chunk = entry->second;	// current chunk
 
 		// skip if the chunk isn't updated
-		if (!chunk->isUpdated()) {
+		if (!chunk->isDataUpdated()) {
 			continue;
 		}
+
+		// update buffer
+		chunk->updateBuffer();
 
 		// send model
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(chunk->getModelMatrix()));

@@ -16,7 +16,8 @@ private:													// key is formatted as: (x << 16 + z), i.e. first 16 bits =
 	Chunk* neighborChunks[4];		// pointers to surrounding chunks in order (front, right, back, left)
 	glm::ivec3 pos;		// position of left, front corner (lowest x, z, y always 0) along integer grid (must be multiple of CHUNK_SIZE)
 	std::vector<Vertex> verts;	// all vertices of all faces which should be drawn of blocks in this chunk
-	bool updated;		// whether or not the block faces and verts of this chunk are up-to-date
+	bool dataUpdated;		// whether or not the block faces and verts of this chunk are up-to-date
+	bool bufferUpdated;		// whether or not the buffer is up to date
 	unsigned int vaoId, bufferId;		// id of the vao that holds this chunk
 	glm::mat4 model;	// model matrix
 
@@ -24,7 +25,6 @@ private:													// key is formatted as: (x << 16 + z), i.e. first 16 bits =
 
 	void updateBlockFaces();	// set which faces of each block are exposed
 	void updateVerts();		// update the verts vector with the correct vertices
-	void updateBuffer();		// update this chunk's buffer
 public:
 	static std::map<uint32_t, Chunk*> chunkList;		// a list of all the chunks mapped using a key based on chunk position
 														// index is (x << 16 + z), i.e. first 16 bits are x, last 16 are z
@@ -40,8 +40,10 @@ public:
 	~Chunk();
 
 	void addNeighbor(Chunk* chunk);		// add a neighboring chunk
-	void update();		// update the block faces and vertices of this chunk
-	bool isUpdated();	// whether or not the face/vertex data of this chunk is up to date
+	void updateData();		// update the block faces and vertices of this chunk
+	void updateBuffer();		// update this chunk's buffer
+	bool isDataUpdated();	// whether or not the face/vertex data of this chunk is up to date
+	bool isBufferUpdated();	// whether or not the buffer is up to date
 
 	glm::ivec3 getPosition();	// returns the position of this chunk
 	unsigned int getVaoId();		// return the vertices array
