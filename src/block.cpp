@@ -68,6 +68,10 @@ const Vertex Block::LEFT_FACE[6] = {
 			-0.5, -0.5, -0.5,		0, 0,
 			-0.5, -0.5, 0.5,		1, 0};
 
+void Block::addBlockTexture(std::string name, int xOffset, int yOffset) {
+	blockOffsets[name] = glm::ivec2(xOffset, yOffset);
+}
+
 Block::Block(int x, int y, int z, std::string textureName) : textureName(textureName), pos(glm::vec3(x, y, z)), exposedFaces(0) {}
 
 std::string Block::getTextureName() {

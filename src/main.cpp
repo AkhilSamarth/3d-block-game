@@ -41,8 +41,7 @@ int main(void)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	// load textures
-	loadTexture("assetts/textures/test.png", "test");
+	// add block texture
 
 	// create shader program
 	Shader shader;
