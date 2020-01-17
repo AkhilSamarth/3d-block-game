@@ -42,8 +42,8 @@ int main(void)
 	glEnable(GL_CULL_FACE);
 
 	// add block texture
-	Block::addBlockTexture("test", 0, 0);
-	Block::addBlockTexture("testInv", 1, 0);
+	Block::addBlockTextureOffset("test", 0, 0);
+	Block::addBlockTextureOffset("testInv", 1, 0);
 
 	// create shader program
 	Shader shader;
@@ -52,6 +52,7 @@ int main(void)
 	shader.linkProgram();
 	
 	// test blocks
+	/*
 	for (int i = 0; i < 16; i++) {
 		for (int j = 0; j < 16; j++) {
 			for (int k = 0; k < WORLD_HEIGHT; k++) {
@@ -65,6 +66,8 @@ int main(void)
 	Chunk::removeBlock(5, 31, 6);
 	Chunk::removeBlock(5, 30, 6);
 	Chunk::removeBlock(0, 31, 0);
+	*/
+	Chunk::addBlock(0, 0, 0, "testInv");
 	
 	std::thread chunkLoader = std::thread(Chunk::updateChunksByNeighbor, Chunk::chunkList[Chunk::getChunkIndex(0, 0)]);
 

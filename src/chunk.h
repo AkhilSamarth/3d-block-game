@@ -21,7 +21,7 @@ private:													// key is formatted as: (x << 16 + z), i.e. first 16 bits =
 	unsigned int vaoId, bufferId;		// id of the vao that holds this chunk
 	glm::mat4 model;	// model matrix
 
-	void addFace(const Vertex* face, int x, int y, int z);	// calculate and add the vertices for this face
+	void addFace(const Vertex* face, int x, int y, int z, int uOffset, int vOffset);	// calculate and add the vertices for this face, (x, y, z) = local position, x/y Offset = position in block spritesheet 
 
 	void updateBlockFaces();	// set which faces of each block are exposed
 	void updateVerts();		// update the verts vector with the correct vertices

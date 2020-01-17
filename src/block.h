@@ -12,7 +12,10 @@
 #define BIT_FACE_LEFT 32
 #define BIT_FACE_ALL (64 - 1)
 
-#define BLOCK_TEXTURE_SIZE 64	// number of pixels in one block in the spritesheet
+#define BLOCK_SPRITE_NAME "block sprites"	
+#define BLOCK_SPRITE_WIDTH 128	// width of spritesheet
+#define BLOCK_SPRITE_HEIGHT 64	// height of spritesheet
+#define BLOCK_SPRITE_UNIT 64	// height/width of one block in the spritesheet
 
 // forward declare Vertex
 struct Vertex;
@@ -35,7 +38,8 @@ public:
 	static const Vertex RIGHT_FACE[6];
 	static const Vertex LEFT_FACE[6];
 
-	static void addBlockTexture(std::string name, int xOffset, int yOffset);	// add a block texture name along with its offset in the spritesheet
+	static void addBlockTextureOffset(std::string name, int uOffset, int vOffset);	// add a block texture name along with its offset in the spritesheet
+	static glm::ivec2 getBlockTextureOffset(std::string name);	// returns the right offset from the map
 	static void bindSpritesheet(unsigned int shaderId);		// binds the block spritesheet
 
 	Block(int x, int y, int z, std::string textureName);		// position set to (x, y, z), textureName must match key in textureMap

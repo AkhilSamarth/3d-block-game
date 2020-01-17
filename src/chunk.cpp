@@ -318,7 +318,11 @@ void Chunk::updateBlockFaces() {
 	}
 }
 
-void Chunk::addFace(const Vertex* face, int x, int y, int z) {
+void Chunk::addFace(const Vertex* face, int x, int y, int z, int uOffset, int vOffset) {
+	// calculate the size of a single block in spritesheet coordinates
+	static const float BLOCK_SIZE_X = 1.0f * BLOCK_SPRITE_UNIT / BLOCK_SPRITE_WIDTH;
+	static const float BLOCK_SIZE_Y = 1.0f * BLOCK_SPRITE_UNIT / BLOCK_SPRITE_HEIGHT;
+
 	// loop through all 6 verts of this face
 	for (const Vertex* vertPtr = face; vertPtr < face + 6; vertPtr++) {
 		// new vertex which will be added to the verts list
@@ -328,6 +332,10 @@ void Chunk::addFace(const Vertex* face, int x, int y, int z) {
 		outVert.pos[0] += 0.5 + x;
 		outVert.pos[1] += 0.5 + y;
 		outVert.pos[2] += 0.5 + z;
+
+		// shift texture coords using offset
+		outVert.texturePos[0] = BLOCK_SIZE_X * (outVert.texturePos[0] + uOffset);
+		outVert.texturePos[1] = BLOCK_SIZE_Y * (outVert.texturePos[1] + vOffset);
 
 		// add to verts
 		verts.push_back(outVert);
@@ -351,24 +359,27 @@ void Chunk::updateVerts() {
 					continue;
 				}
 
+				// get texture offset to give to addFace
+				glm::ivec2 textureOffset = Block::getBlockTextureOffset(block->getTextureName());
+
 				// add exposed faces
 				if (block->getFace(BIT_FACE_TOP)) {
-					addFace(Block::TOP_FACE, x, y, z);
+					addFace(Block::TOP_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_BOTTOM)) {
-					addFace(Block::BOTTOM_FACE, x, y, z);
+					addFace(Block::BOTTOM_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_LEFT)) {
-					addFace(Block::LEFT_FACE, x, y, z);
+					addFace(Block::LEFT_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_RIGHT)) {
-					addFace(Block::RIGHT_FACE, x, y, z);
+					addFace(Block::RIGHT_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_FRONT)) {
-					addFace(Block::FRONT_FACE, x, y, z);
+					addFace(Block::FRONT_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_BACK)) {
-					addFace(Block::BACK_FACE, x, y, z);
+					addFace(Block::BACK_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 			}
 		}

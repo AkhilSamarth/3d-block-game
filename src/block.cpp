@@ -7,8 +7,6 @@
 #include "drawing.h"
 #include "texture.h"
 
-#define BLOCK_SPRITE_NAME "block sprites"
-
 std::map<std::string, glm::ivec2> Block::blockOffsets = std::map<std::string, glm::ivec2>();
 
 // fill data arrays for a block that's centered at (0, 0, 0)
@@ -75,8 +73,18 @@ void Block::loadSpritesheet() {
 	spriteLoaded = true;
 }
 
-void Block::addBlockTexture(std::string name, int xOffset, int yOffset) {
-	blockOffsets[name] = glm::ivec2(xOffset, yOffset);
+void Block::addBlockTextureOffset(std::string name, int uOffset, int vOffset) {
+	blockOffsets[name] = glm::ivec2(uOffset, vOffset);
+}
+
+glm::ivec2 Block::getBlockTextureOffset(std::string name) {
+	// check if the name exists
+	if (blockOffsets.find(name) == blockOffsets.end()) {
+		std::cerr << "Texture name \"" << name << "\" not found." << std::endl;
+		return glm::ivec2(0, 0);
+	}
+
+	return blockOffsets[name];
 }
 
 void Block::bindSpritesheet(unsigned int shaderId) {
