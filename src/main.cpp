@@ -44,7 +44,6 @@ int main(void)
 	// add block texture
 	Block::addBlockTexture("test", 0, 0);
 	Block::addBlockTexture("testInv", 1, 0);
-	loadTexture("assetts/textures/test.png", "test");
 
 	// create shader program
 	Shader shader;
@@ -97,7 +96,7 @@ int main(void)
 
 		// update FPS timer if needed
 		if (SHOW_FPS && (glfwGetTime() - fpsTimer >= FPS_COUNTER_INTERVAL)) {
-			printf("FPS: %f, sec per frame (1/FPS): %f\n", 1.0f / ((glfwGetTime() - renderStartTime)), (glfwGetTime() - renderStartTime));
+			printf("FPS: %f, ms per frame: %f\n", 1.0f / ((glfwGetTime() - renderStartTime)), (glfwGetTime() - renderStartTime) * 1000);
 			fpsTimer = glfwGetTime();
 		}
 
