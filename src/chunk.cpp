@@ -15,13 +15,12 @@ void Chunk::updateChunksByNeighbor(Chunk* start) {
 		// process next chunk waiting in queue
 		Chunk* current = chunksToGo.front();
 		chunksToGo.pop();
-		printf("processing (%d, %d)\n", current->getPosition().x, current->getPosition().z);
 		current->updateData();
 
-		// add neighbors to queue
+		// add unupdated neighbors to queue
 		for (int i = 0; i < 4; i++) {
 			Chunk* neighbor = current->neighborChunks[i];
-			if (neighbor != nullptr) {
+			if (neighbor != nullptr && !neighbor->dataUpdated) {
 				chunksToGo.push(neighbor);
 			}
 		}
@@ -156,27 +155,27 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 
 	// check if neighbors exist, and if so, create a connection to them
 	Chunk* neighbor;
-	if (chunkList.find(getChunkIndex(pos.x, pos.y - 1)) != chunkList.end()) {
+	if (chunkList.find(getChunkIndex(pos.x, pos.y - CHUNK_SIZE)) != chunkList.end()) {
 		// front
-		neighbor = chunkList[getChunkIndex(pos.x, pos.y - 1)];
+		neighbor = chunkList[getChunkIndex(pos.x, pos.y - CHUNK_SIZE)];
 		neighborChunks[0] = neighbor;
 		neighbor->addNeighbor(this);
 	}
-	if (chunkList.find(getChunkIndex(pos.x + 1, pos.y)) != chunkList.end()) {
+	if (chunkList.find(getChunkIndex(pos.x + CHUNK_SIZE, pos.y)) != chunkList.end()) {
 		// right
-		neighbor = chunkList[getChunkIndex(pos.x + 1, pos.y)];
+		neighbor = chunkList[getChunkIndex(pos.x + CHUNK_SIZE, pos.y)];
 		neighborChunks[1] = neighbor;
 		neighbor->addNeighbor(this);
 	}
-	if (chunkList.find(getChunkIndex(pos.x, pos.y + 1)) != chunkList.end()) {
+	if (chunkList.find(getChunkIndex(pos.x, pos.y + CHUNK_SIZE)) != chunkList.end()) {
 		// back
-		neighbor = chunkList[getChunkIndex(pos.x, pos.y + 1)];
+		neighbor = chunkList[getChunkIndex(pos.x, pos.y + CHUNK_SIZE)];
 		neighborChunks[2] = neighbor;
 		neighbor->addNeighbor(this);
 	}
-	if (chunkList.find(getChunkIndex(pos.x - 1, pos.y)) != chunkList.end()) {
+	if (chunkList.find(getChunkIndex(pos.x - CHUNK_SIZE, pos.y)) != chunkList.end()) {
 		// left
-		neighbor = chunkList[getChunkIndex(pos.x - 1, pos.y)];
+		neighbor = chunkList[getChunkIndex(pos.x - CHUNK_SIZE, pos.y)];
 		neighborChunks[3] = neighbor;
 		neighbor->addNeighbor(this);
 	}
