@@ -2,13 +2,14 @@
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
 
+#include "game.h"
 #include "camera.h"
 #include "chunk.h"
 
 #define MOUSE_SENS 0.08		// mouse sensitivity
 #define MOVE_SPEED 5		// speed on key presses (units per second)
 
-void mouseCallback(GLFWwindow* window, double x, double y) {
+static void mouseCallback(GLFWwindow* window, double x, double y) {
 	// need to keep track of previous x and y to calculate deltas
 	static double lastX = x;
 	static double lastY = y;
@@ -28,7 +29,7 @@ void mouseCallback(GLFWwindow* window, double x, double y) {
 
 // deals with key presses
 // delta is used to make sure movement speed doesn't change based on computer performance
-void processKeys(GLFWwindow* window, float delta) {
+static void processKeys(GLFWwindow* window, float delta) {
 	float camSpeed = MOVE_SPEED * delta;
 
 	// process key presses
@@ -52,7 +53,7 @@ void processKeys(GLFWwindow* window, float delta) {
 	}
 }
 
-void startGame(GLFWwindow* window) {
+static void startGameHelper(GLFWwindow* window) {
 	// mouse input setup
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouseCallback);	// add mouse callback
@@ -63,7 +64,13 @@ void startGame(GLFWwindow* window) {
 		float loopStartTime = glfwGetTime();	// used to update delta
 
 		processKeys(window, delta);
+
+		printf("test\n");
 	
 		delta = glfwGetTime() - loopStartTime;
 	}
+}
+
+std::thread* startGame(GLFWwindow* window) {
+	return new std::thread(startGameHelper, window);
 }

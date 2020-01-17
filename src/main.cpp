@@ -69,7 +69,7 @@ int main(void)
 	cam.activate();
 
 	// start game loop
-	std::thread gameThread(startGame, window);
+	std::thread* gameThread = startGame(window);
 
 	// timer for fps counter
 	double fpsTimer = glfwGetTime();
@@ -101,7 +101,8 @@ int main(void)
 	}
 
 	// wait for game loop to end
-	gameThread.join();
+	gameThread->join();
+	delete gameThread;
 
 	glfwTerminate();
 	return 0;
