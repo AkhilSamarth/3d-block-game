@@ -132,18 +132,11 @@ int Block::getSpriteHeight() {
 	return spriteHeight;
 }
 
-Block::Block(int x, int y, int z, std::string textures[6]) : pos(glm::vec3(x, y, z)), exposedFaces(0) {
-	// set textures of all sides
-	for (int i = 0; i < 6; i++) {
-		this->textures[i] = textures[i];
-	}
-}
 
-Block::Block(int x, int y, int z, std::string texture) : pos(glm::vec3(x, y, z)), exposedFaces(0) {
-	// set textures of all sides
-	for (int i = 0; i < 6; i++) {
-		textures[i] = texture;
-	}
+Block::Block(int x, int y, int z, BlockTexture texture) : texture(texture), pos(glm::vec3(x, y, z)), exposedFaces(0) {}
+
+BlockTexture Block::getTexture() {
+	return texture;
 }
 
 void Block::setFace(unsigned char bits) {

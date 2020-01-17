@@ -32,8 +32,7 @@ public:
 	static void updateAllChunks();		// updates all the chunks in the chunk list
 
 	static void getChunkPosition(int global, int globalZ, int& chunk, int& chunkZ);	// gets the chunk position containing the global position (x, y, z), y = anything
-	static void addBlock(int x, int y, int z, std::string texture[6]);	// add block to correct chunk at position (x, y, z) in global coords
-	static void addBlock(int x, int y, int z, std::string texture);	// add block to correct chunk at position (x, y, z) in global coords, single texture
+	static void addBlock(int x, int y, int z, BlockTexture texture);	// add block to correct chunk at position (x, y, z) in global coords
 	static void removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
 	static uint32_t getChunkIndex(int x, int z);	// returns the map key corresponding to this x and z
 

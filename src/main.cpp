@@ -68,7 +68,7 @@ int main(void)
 	Chunk::removeBlock(5, 30, 6);
 	Chunk::removeBlock(0, 31, 0);
 	*/
-	Chunk::addBlock(0, 0, 0, std::string[]{"testInv"});
+	Chunk::addBlock(0, 0, 0, BlockTexture("test"));
 	
 	std::thread chunkLoader = std::thread(Chunk::updateChunksByNeighbor, Chunk::chunkList[Chunk::getChunkIndex(0, 0)]);
 
