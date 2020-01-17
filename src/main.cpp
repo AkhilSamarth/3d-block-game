@@ -51,10 +51,10 @@ int main(void)
 	shader.linkProgram();
 	
 	// test blocks
-	for (int i = 0; i < 500; i++) {
-		for (int j = 0; j < 500; j++) {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
 			for (int k = 1; k < 2; k++) {
-				Chunk::addBlock(i - 250, k, -j, "test");
+				Chunk::addBlock(i, k, j, "test");
 			}
 		}
 	}

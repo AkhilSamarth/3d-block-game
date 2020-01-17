@@ -238,6 +238,73 @@ void Chunk::updateBlockFaces() {
 			}
 		}
 	}
+
+	// use neighbors to calculate exposed faces on chunk boundaries
+	// front and back faces
+	Chunk* front = neighborChunks[0];
+	Chunk* back = neighborChunks[2];
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < WORLD_HEIGHT; y++) {
+			// front
+			if (blocks[x][y][0] != nullptr) {
+				if (front != nullptr) {
+					// check corresponding block on neighbor
+					bool expose = (front->blocks[x][y][CHUNK_SIZE - 1] == nullptr);
+					blocks[x][y][0]->boolFace(BIT_FACE_FRONT, expose);
+				}
+				else {
+					// no neighbor, so expose face
+					blocks[x][y][0]->setFace(BIT_FACE_FRONT);
+				}
+			}
+
+			// back
+			if (blocks[x][y][CHUNK_SIZE - 1] != nullptr) {
+				if (back != nullptr) {
+					// check corresponding block on neighbor
+					bool expose = (back->blocks[x][y][0] == nullptr);
+					blocks[x][y][CHUNK_SIZE - 1]->boolFace(BIT_FACE_BACK, expose);
+				}
+				else {
+					// no neighbor, so expose face
+					blocks[x][y][CHUNK_SIZE - 1]->setFace(BIT_FACE_BACK);
+				}
+			}
+		}
+	}
+
+	// left and right faces
+	Chunk* right = neighborChunks[1];
+	Chunk* left = neighborChunks[3];
+	for (int z = 0; z < CHUNK_SIZE; z++) {
+		for (int y = 0; y < WORLD_HEIGHT; y++) {
+			// left
+			if (blocks[0][y][z] != nullptr) {
+				if (left != nullptr) {
+					// check corresponding block on neighbor
+					bool expose = (left->blocks[CHUNK_SIZE - 1][y][z] == nullptr);
+					blocks[0][y][z]->boolFace(BIT_FACE_LEFT, expose);
+				}
+				else {
+					// no neighbor, so expose face
+					blocks[0][y][z]->setFace(BIT_FACE_LEFT);
+				}
+			}
+
+			// right
+			if (blocks[CHUNK_SIZE - 1][y][z] != nullptr) {
+				if (right != nullptr) {
+					// check corresponding block on neighbor
+					bool expose = (right->blocks[0][y][z] == nullptr);
+					blocks[CHUNK_SIZE - 1][y][z]->boolFace(BIT_FACE_RIGHT, expose);
+				}
+				else {
+					// no neighbor, so expose face
+					blocks[CHUNK_SIZE - 1][y][z]->setFace(BIT_FACE_RIGHT);
+				}
+			}
+		}
+	}
 }
 
 void Chunk::addFace(const Vertex* face, int x, int y, int z) {
