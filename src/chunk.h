@@ -10,10 +10,21 @@
 #define CHUNK_SIZE 8		// each chunk will be a column with this length and width
 #define WORLD_HEIGHT 32		// height of the world 
 
+// forward declaration
+class Chunk;
+
+// struct to hold pointers to neighbors
+struct ChunkNeighbors {
+	Chunk* front;
+	Chunk* right;
+	Chunk* back;
+	Chunk* left;
+};
+
 class Chunk {
 private:													// key is formatted as: (x << 16 + z), i.e. first 16 bits = x, second 16 bits = z
 	Block* blocks[CHUNK_SIZE][WORLD_HEIGHT][CHUNK_SIZE];	// pointers to all blocks in this chunk at correct position
-	Chunk* neighborChunks[4];		// pointers to surrounding chunks in order (front, right, back, left)
+	ChunkNeighbors neighborChunks;		// pointers to surrounding chunks in order (front, right, back, left)
 	glm::ivec3 pos;		// position of left, front corner (lowest x, z, y always 0) along integer grid (must be multiple of CHUNK_SIZE)
 	std::vector<Vertex> verts;	// all vertices of all faces which should be drawn of blocks in this chunk
 	bool dataUpdated;		// whether or not the block faces and verts of this chunk are up-to-date

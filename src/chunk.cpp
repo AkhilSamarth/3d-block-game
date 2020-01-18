@@ -26,8 +26,9 @@ void Chunk::updateChunksByNeighbor(Chunk* start, bool& doneUpdating) {
 		current->updateData();
 
 		// add unupdated neighbors to queue
+		Chunk* neighbors[4] = {current->neighborChunks.front, current->neighborChunks.right, current->neighborChunks.back, current->neighborChunks.left};
 		for (int i = 0; i < 4; i++) {
-			Chunk* neighbor = current->neighborChunks[i];
+			Chunk* neighbor = neighbors[i];
 			if (neighbor != nullptr && !neighbor->dataUpdated && (chunkSet.find(neighbor) == chunkSet.end())) {
 				chunksToGo.push(neighbor);
 				chunkSet.insert(neighbor);
@@ -91,31 +92,31 @@ void Chunk::markNeighborsForUpdate(int localX, int localZ) {
 	// check x
 	if (localX == 0) {
 		// left edge
-		if (neighborChunks[3] != nullptr) {
-			neighborChunks[3]->dataUpdated = false;
-			neighborChunks[3]->bufferUpdated = false;
+		if (neighborChunks.left != nullptr) {
+			neighborChunks.left->dataUpdated = false;
+			neighborChunks.left->bufferUpdated = false;
 		}
 	}
 	else if (localX == CHUNK_SIZE - 1) {
 		// right edge
-		if (neighborChunks[1] != nullptr) {
-			neighborChunks[1]->dataUpdated = false;
-			neighborChunks[1]->bufferUpdated = false;
+		if (neighborChunks.right != nullptr) {
+			neighborChunks.right->dataUpdated = false;
+			neighborChunks.right->bufferUpdated = false;
 		}
 	}
 	// check z
 	if (localZ == 0) {
 		// front edge
-		if (neighborChunks[0] != nullptr) {
-			neighborChunks[0]->dataUpdated = false;
-			neighborChunks[0]->bufferUpdated = false;
+		if (neighborChunks.front != nullptr) {
+			neighborChunks.front->dataUpdated = false;
+			neighborChunks.front->bufferUpdated = false;
 		}
 	}
 	else if (localZ == CHUNK_SIZE - 1) {
 		// back edge
-		if (neighborChunks[2] != nullptr) {
-			neighborChunks[2]->dataUpdated = false;
-			neighborChunks[2]->bufferUpdated = false;
+		if (neighborChunks.back != nullptr) {
+			neighborChunks.back->dataUpdated = false;
+			neighborChunks.back->bufferUpdated = false;
 		}
 	}
 }
@@ -227,25 +228,25 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 	if (chunkList.find(getChunkIndex(pos.x, pos.y - CHUNK_SIZE)) != chunkList.end()) {
 		// front
 		neighbor = chunkList[getChunkIndex(pos.x, pos.y - CHUNK_SIZE)];
-		neighborChunks[0] = neighbor;
+		neighborChunks.front = neighbor;
 		neighbor->addNeighbor(this);
 	}
 	if (chunkList.find(getChunkIndex(pos.x + CHUNK_SIZE, pos.y)) != chunkList.end()) {
 		// right
 		neighbor = chunkList[getChunkIndex(pos.x + CHUNK_SIZE, pos.y)];
-		neighborChunks[1] = neighbor;
+		neighborChunks.right = neighbor;
 		neighbor->addNeighbor(this);
 	}
 	if (chunkList.find(getChunkIndex(pos.x, pos.y + CHUNK_SIZE)) != chunkList.end()) {
 		// back
 		neighbor = chunkList[getChunkIndex(pos.x, pos.y + CHUNK_SIZE)];
-		neighborChunks[2] = neighbor;
+		neighborChunks.back = neighbor;
 		neighbor->addNeighbor(this);
 	}
 	if (chunkList.find(getChunkIndex(pos.x - CHUNK_SIZE, pos.y)) != chunkList.end()) {
 		// left
 		neighbor = chunkList[getChunkIndex(pos.x - CHUNK_SIZE, pos.y)];
-		neighborChunks[3] = neighbor;
+		neighborChunks.left = neighbor;
 		neighbor->addNeighbor(this);
 	}
 
@@ -317,8 +318,8 @@ void Chunk::updateBlockFaces() {
 
 	// use neighbors to calculate exposed faces on chunk boundaries
 	// front and back faces
-	Chunk* front = neighborChunks[0];
-	Chunk* back = neighborChunks[2];
+	Chunk* front = neighborChunks.front;
+	Chunk* back = neighborChunks.back;
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < WORLD_HEIGHT; y++) {
 			// front
@@ -350,8 +351,8 @@ void Chunk::updateBlockFaces() {
 	}
 
 	// left and right faces
-	Chunk* right = neighborChunks[1];
-	Chunk* left = neighborChunks[3];
+	Chunk* right = neighborChunks.right;
+	Chunk* left = neighborChunks.left;
 	for (int z = 0; z < CHUNK_SIZE; z++) {
 		for (int y = 0; y < WORLD_HEIGHT; y++) {
 			// left
@@ -501,19 +502,19 @@ void Chunk::addNeighbor(Chunk* chunk) {
 	// figure our which chunk this is and add it to the right spot
 	if (chunkPos.z < pos.z) {
 		// front
-		neighborChunks[0] = chunk;
+		neighborChunks.front = chunk;
 	}
 	else if (chunkPos.x > pos.x) {
 		// right
-		neighborChunks[1] = chunk;
+		neighborChunks.right = chunk;
 	}
 	else if (chunkPos.z > pos.z) {
 		// back
-		neighborChunks[2] = chunk;
+		neighborChunks.back = chunk;
 	}
 	else {
 		// left
-		neighborChunks[3] = chunk;
+		neighborChunks.left = chunk;
 	}
 }
 
