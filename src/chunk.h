@@ -28,8 +28,8 @@ private:													// key is formatted as: (x << 16 + z), i.e. first 16 bits =
 public:
 	static std::map<uint32_t, Chunk*> chunkList;		// a list of all the chunks mapped using a key based on chunk position
 														// index is (x << 16 + z), i.e. first 16 bits are x, last 16 are z
-	static void updateChunksByNeighbor(Chunk* start);	// updates chunks in a breadth-first-search style, starting with the given node
-	static void updateAllChunks();		// updates all the chunks in the chunk list
+	static void updateChunksByNeighbor(Chunk* start, bool& doneUpdating);	// updates chunks in a breadth-first-search style, starting with the given node. doneUpdating changes when updating is done
+	static void updateAllChunks(bool& doneUpdating);		// updates all the chunks in the chunk list. doneUpdating changes when updating is done
 
 	static void getChunkPosition(int global, int globalZ, int& chunk, int& chunkZ);	// gets the chunk position containing the global position (x, y, z), y = anything
 	static void addBlock(std::string blockName, int x, int y, int z);	// add the given block to correct chunk at position (x, y, z) in global coords

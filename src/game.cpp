@@ -4,6 +4,7 @@
 
 #include "game.h"
 #include "camera.h"
+#include "chunk.h"
 
 #define MOUSE_SENS 0.08		// mouse sensitivity
 #define MOVE_SPEED 5		// speed on key presses (units per second)
@@ -54,6 +55,40 @@ namespace Game {
 		}
 	}
 
+	// update chunks, either all or by neighbor
+	// if by neighbor, starts with chunk the camera is in
+	// doneUpdating changes to true when chunk updating is finished
+	std::thread* loadChunks(bool byNeighbor, bool& doneUpdating) {
+		static bool running = false;	// make sure only one chunk loader is running at a time
+
+		if (running) {
+			std::cerr << "Chunk loader is already running." << std::endl;
+			return nullptr;
+		}
+
+		running = true;
+		doneUpdating = false;
+
+		if (byNeighbor) {
+			// get cam position
+			glm::vec3 camPos = Camera::getActiveCam()->getPosition();
+			uint32_t chunkIndex = Chunk::getChunkIndex(camPos.x, camPos.z);
+			if (Chunk::chunkList.find(chunkIndex) == Chunk::chunkList.end()) {
+				std::cerr << "Active cam is in non-existant chunk. Updating all chunks." << std::endl;
+				// update all chunks instead
+				return new std::thread(Chunk::updateAllChunks, doneUpdating);
+			}
+			Chunk* starter = Chunk::chunkList[chunkIndex];
+
+			return new std::thread(Chunk::updateChunksByNeighbor, starter, doneUpdating);
+		}
+		else {
+			return new std::thread(Chunk::updateAllChunks, doneUpdating);
+		}
+
+		running = false;
+	}
+
 	void startGame(GLFWwindow* window) {
 		// mouse input setup
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -61,12 +96,23 @@ namespace Game {
 
 		float delta = glfwGetTime();		// used to keep track of time between loop iterations
 
+		bool chunkLoaderDone = false;	// used to join chunk loading threads once loading finishes
+		std::thread* chunkLoader;		// keep track of the chunk loading thread
+
+		// initial chunk load
+		chunkLoader = Game::loadChunks(true, chunkLoaderDone);
+
 		// keep running until window should close (same as rendering loop)
 		while (!glfwWindowShouldClose(window)) {
 			float loopStartTime = glfwGetTime();	// used to update delta
 			processKeys(window, delta);
 
-
+			// join and delete chunkLoader thread if needed
+			if (chunkLoaderDone) {
+				chunkLoader->join();
+				delete chunkLoader;
+				chunkLoaderDone = false;
+			}
 
 			delta = glfwGetTime() - loopStartTime;
 		}
@@ -76,11 +122,11 @@ namespace Game {
 std::thread* startGame(GLFWwindow* window) {
 	static bool gameStarted = false;	// make sure this only runs once
 
-	if (!gameStarted) {
-		gameStarted = true;
-		return new std::thread(Game::startGame, window);
+	if (gameStarted) {
+		std::cerr << "Attempted to start a second game thread." << std::endl;
+		return nullptr;
 	}
 
-	std::cerr << "Attempted to start a second game thread." << std::endl;
-	return nullptr;
+	gameStarted = true;
+	return new std::thread(Game::startGame, window);
 }

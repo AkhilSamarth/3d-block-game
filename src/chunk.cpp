@@ -8,7 +8,9 @@
 
 std::map<uint32_t, Chunk*> Chunk::chunkList = std::map<uint32_t, Chunk*>();
 
-void Chunk::updateChunksByNeighbor(Chunk* start) {
+void Chunk::updateChunksByNeighbor(Chunk* start, bool& doneUpdating) {
+	doneUpdating = false;
+
 	// queue containing all chunks that need to be updated
 	std::queue<Chunk*> chunksToGo = std::queue<Chunk*>();
 	chunksToGo.push(start);
@@ -32,9 +34,13 @@ void Chunk::updateChunksByNeighbor(Chunk* start) {
 			}
 		}
 	}
+
+	doneUpdating = true;
 }
 
-void Chunk::updateAllChunks() {
+void Chunk::updateAllChunks(bool& doneUpdating) {
+	doneUpdating = false;
+
 	// loop through chunklist
 	for (auto entry = chunkList.begin(); entry != chunkList.end(); entry++) {
 		Chunk* chunk = entry->second;
@@ -46,6 +52,8 @@ void Chunk::updateAllChunks() {
 
 		chunk->updateData();
 	}
+
+	doneUpdating = true;
 }
 
 void Chunk::getChunkPosition(int globalX, int globalZ, int& chunkX, int& chunkZ) {
