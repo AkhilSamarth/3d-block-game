@@ -12,8 +12,7 @@
 #define BIT_FACE_LEFT 32
 #define BIT_FACE_ALL (64 - 1)
 
-#define BLOCK_SPRITE_UNIT 64	// height/width of one block in the spritesheet
-
+#define BLOCK_SPRITE_UNIT 32	// height/width of one block in the spritesheet
 #define BLOCK_SPRITE_NAME "block sprites"
 #define BLOCK_SPRITE_PATH "assetts/textures/block_sprite.png"
 

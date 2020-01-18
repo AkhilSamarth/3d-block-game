@@ -41,6 +41,9 @@ int main(void)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
+	// set clear color to sky blue
+	glClearColor(0, 0.765, 1, 1);
+
 	// load textures
 	loadTextures();
 
@@ -51,22 +54,23 @@ int main(void)
 	shader.linkProgram();
 	
 	// test blocks
-	/*
-	for (int i = 0; i < 16; i++) {
-		for (int j = 0; j < 16; j++) {
-			for (int k = 0; k < WORLD_HEIGHT; k++) {
-				Chunk::addBlock(i, k, j, "test");
+	for (int y = 0; y < 5; y++) {
+		std::string blockName;
+		if (y == 0 || y == 1) {
+			blockName = "stone";
+		}
+		else if (y == 2 || y == 3) {
+			blockName = "dirt";
+		}
+		else {
+			blockName = "grass";
+		}
+		for (int x = -25; x < 25; x++) {
+			for (int z = -25; z < 25; z++) {
+				Chunk::addBlock(blockName, x, y, z);
 			}
 		}
 	}
-	Chunk::removeBlock(5, 1, 6);
-	Chunk::removeBlock(5, 0, 6);
-	Chunk::removeBlock(0, 0, 0);
-	Chunk::removeBlock(5, 31, 6);
-	Chunk::removeBlock(5, 30, 6);
-	Chunk::removeBlock(0, 31, 0);
-	*/
-	Chunk::addBlock("testBlock", 0, 0, 0);
 	
 	std::thread chunkLoader = std::thread(Chunk::updateChunksByNeighbor, Chunk::chunkList[Chunk::getChunkIndex(0, 0)]);
 

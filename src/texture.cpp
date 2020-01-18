@@ -24,11 +24,15 @@ void addBlockTexture(std::string blockName, BlockTexture texture) {
 void loadTextures() {
 	// block textures
 	// sprite sheet offset (should have one entry for each block in the spritesheet)
-	Block::addBlockTextureOffset("test", 0, 0);
-	Block::addBlockTextureOffset("testInv", 1, 0);
+	Block::addBlockTextureOffset("dirt", 0, 0);
+	Block::addBlockTextureOffset("grass_side", 1, 0);
+	Block::addBlockTextureOffset("grass", 0, 1);
+	Block::addBlockTextureOffset("stone", 1, 1);
 
 	// textures for each block
-	addBlockTexture("testBlock", BlockTexture("test"));
+	addBlockTexture("dirt", BlockTexture("dirt"));
+	addBlockTexture("stone", BlockTexture("stone"));
+	addBlockTexture("grass", BlockTexture("grass", "dirt", "grass_side", "grass_side", "grass_side", "grass_side"));
 
 	Block::loadSpritesheet();
 }
