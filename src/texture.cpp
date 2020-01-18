@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 
 #include "texture.h"
+#include "block.h"
 
 std::map<std::string, unsigned int>& getTextureMap() {
 	// done like this instead of global var to make sure it exists at first use
@@ -18,6 +19,18 @@ std::map<std::string, BlockTexture>& getBlockTextures() {
 
 void addBlockTexture(std::string blockName, BlockTexture texture) {
 	getBlockTextures().insert(std::pair<std::string, BlockTexture>(blockName, texture));
+}
+
+void loadTextures() {
+	// block textures
+	// sprite sheet offset (should have one entry for each block in the spritesheet)
+	Block::addBlockTextureOffset("test", 0, 0);
+	Block::addBlockTextureOffset("testInv", 1, 0);
+
+	// textures for each block
+	addBlockTexture("testBlock", BlockTexture("test"));
+
+	Block::loadSpritesheet();
 }
 
 unsigned int getTextureId(std::string name) {

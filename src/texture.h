@@ -24,6 +24,8 @@ std::map<std::string, unsigned int>& getTextureMap();	// returns the map which c
 std::map<std::string, BlockTexture>& getBlockTextures();	// returns the map which contains block names mapped to textures
 void addBlockTexture(std::string blockName, BlockTexture texture);		// add a block texture to the map
 
+void loadTextures();	// all texture loading should be done here
+
 unsigned int getTextureId(std::string name);		// returns the id associated with this texture name
 void bindTexture(std::string name, unsigned int shaderId);		// bind the given texture
 unsigned int loadTexture(std::string path, std::string name);		// loads image at the given path as a texture and assigns it in the map to the given name, returns id

@@ -41,11 +41,8 @@ int main(void)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	// add block texture
-	Block::addBlockTextureOffset("test", 0, 0);
-	Block::addBlockTextureOffset("testInv", 1, 0);
-	addBlockTexture("testBlck", BlockTexture("test"));
-	Block::loadSpritesheet();
+	// load textures
+	loadTextures();
 
 	// create shader program
 	Shader shader;
