@@ -83,6 +83,10 @@ void Chunk::getChunkPosition(int globalX, int globalZ, int& chunkX, int& chunkZ)
 	}
 }
 
+uint32_t Chunk::getChunkIndex(int x, int z) {
+	return (x << 16) + z;
+}
+
 void Chunk::addBlock(std::string blockName, int x, int y, int z) {
 	// make sure block is in bounds vertically
 	if (y < 0 || y >= WORLD_HEIGHT) {
@@ -145,8 +149,21 @@ void Chunk::removeBlock(int x, int y, int z) {
 	chunk->bufferUpdated = false;
 }
 
-uint32_t Chunk::getChunkIndex(int x, int z) {
-	return (x << 16) + z;
+bool Chunk::checkBlock(int x, int y, int z) {
+	int chunkX;
+	int chunkZ;
+	getChunkPosition(x, z, chunkX, chunkZ);
+
+	// calculate chunk index for map
+	uint32_t chunkIndex = getChunkIndex(chunkX, chunkZ);
+
+	// check if a chunk exists at the given position
+	if (chunkList.find(chunkIndex) == chunkList.end()) {
+		return false;
+	}
+
+	// return if a block exists
+	return chunkList[chunkIndex]->blocks[x - chunkX][y][z - chunkZ] != nullptr;
 }
 
 Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Vertex>()) {

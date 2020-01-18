@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -64,6 +65,10 @@ const Vertex Block::LEFT_FACE[6] = {
 			-0.5, 0.5, 0.5,			1, 1,
 			-0.5, -0.5, -0.5,		0, 0,
 			-0.5, -0.5, 0.5,		1, 0};
+
+glm::ivec3 Block::getBlockPositionFromGlobal(glm::vec3 pos) {
+	return glm::ivec3((int) std::floor(pos.x), (int) std::floor(pos.y), (int) std::floor(pos.z));		// block pos is floor of pos
+}
 
 Block::Block(std::string name, int x, int y, int z) : name(name), pos(glm::vec3(x, y, z)), exposedFaces(0) {}
 

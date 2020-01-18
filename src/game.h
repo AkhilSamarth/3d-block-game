@@ -4,7 +4,8 @@
 
 namespace Game {
 	// need to expose these so they can be set in main()
-	void mouseCallback(GLFWwindow* window, double x, double y);
+	void mousePositionCallback(GLFWwindow* window, double x, double y);
+	void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 }
 
 // all non-graphics, logic stuff should go in here.

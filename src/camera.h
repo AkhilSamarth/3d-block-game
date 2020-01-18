@@ -27,14 +27,11 @@ public:
 	void setPitch(float angle);		// set the pitch to the given angle (positive = up)
 	void setFov(float fov);		// set the horizontal fov
 	
-	// getters
-	glm::vec3 getPosition();
+	glm::vec3 getPosition();	// return the camera's current position
 
-	// calculate and return the forward, right, and up vectors (perpendicular to each other
-	// vectors are normalized
-	glm::vec3 getForward();
-	glm::vec3 getRight();
-	glm::vec3 getUp();
+	glm::vec3 getForward();		// return the normalized forward vector
+	glm::vec3 getRight();	// return the normalized right vector
+	glm::vec3 getUp();	// return the normalized up vector
 
 	float getYaw();
 	float getPitch();

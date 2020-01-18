@@ -12,7 +12,7 @@
 #include "game.h"
 #include "chunk.h"
 
-#define SHOW_FPS true
+#define SHOW_FPS false
 #define FPS_COUNTER_INTERVAL 0.5	// how often (in seconds) to print FPS
 
 int main(void) {
@@ -78,7 +78,8 @@ int main(void) {
 	// set up mouse input
 	// mouse input setup
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, Game::mouseCallback);
+	glfwSetCursorPosCallback(window, Game::mousePositionCallback);
+	glfwSetMouseButtonCallback(window, Game::mouseButtonCallback);
 
 	// start game loop
 	std::thread* gameThread = startGame(window);

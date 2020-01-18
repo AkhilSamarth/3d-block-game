@@ -9,52 +9,10 @@
 #define MOUSE_SENS 0.08		// mouse sensitivity
 #define MOVE_SPEED 5		// speed on key presses (units per second)
 
+#define TRACE_RANGE 4.0f	// how far the player can reach
+#define TRACE_STEP 0.01f	// interval at which block position is calculated (lower = more accurate, less performance)
+
 namespace Game {
-	// used to process mouse movement
-	void mouseCallback(GLFWwindow* window, double x, double y) {
-		// need to keep track of previous x and y to calculate deltas
-		static double lastX = x;
-		static double lastY = y;
-
-		// calculate deltas
-		double deltaX = x - lastX;
-		double deltaY = y - lastY;
-
-		// rotate camera
-		Camera::getActiveCam()->rotateYaw(-deltaX * MOUSE_SENS);
-		Camera::getActiveCam()->rotatePitch(-deltaY * MOUSE_SENS);
-
-		// update "last" vars
-		lastX = x;
-		lastY = y;
-	}
-
-	// deals with key presses
-	// delta is used to make sure movement speed doesn't change based on computer performance
-	void processKeys(GLFWwindow* window, float delta) {
-		float camSpeed = MOVE_SPEED * delta;
-
-		// process key presses
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			Camera::getActiveCam()->translate(Camera::getActiveCam()->getForward() * camSpeed);
-		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-			Camera::getActiveCam()->translate(Camera::getActiveCam()->getForward() * -camSpeed);
-		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			Camera::getActiveCam()->translate(Camera::getActiveCam()->getRight() * -camSpeed);
-		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-			Camera::getActiveCam()->translate(Camera::getActiveCam()->getRight() * camSpeed);
-		}
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-			Camera::getActiveCam()->translate(Camera::getActiveCam()->getUp() * camSpeed);
-		}
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-			Camera::getActiveCam()->translate(Camera::getActiveCam()->getUp() * -camSpeed);
-		}
-	}
-
 	// update chunks, either all or by neighbor
 	// if by neighbor, starts with chunk the camera is in
 	// doneUpdating changes to true when chunk updating is finished
@@ -101,9 +59,95 @@ namespace Game {
 			std::cerr << "Attempted to update non-existant chunk containing position (" << x << ", " << y << ")." << std::endl;
 			return;
 		}
-		
+
 		// update chunk
 		Chunk::chunkList[chunkIndex]->updateData();
+	}
+
+	// mouse movement
+	void mousePositionCallback(GLFWwindow* window, double x, double y) {
+		// need to keep track of previous x and y to calculate deltas
+		static double lastX = x;
+		static double lastY = y;
+
+		// calculate deltas
+		double deltaX = x - lastX;
+		double deltaY = y - lastY;
+
+		// rotate camera
+		Camera::getActiveCam()->rotateYaw(-deltaX * MOUSE_SENS);
+		Camera::getActiveCam()->rotatePitch(-deltaY * MOUSE_SENS);
+
+		// update "last" vars
+		lastX = x;
+		lastY = y;
+	}
+
+	// call function on left click
+	void leftClick() {
+		// left button press
+		glm::vec3 camPos = Camera::getActiveCam()->getPosition();		// camera position
+		glm::vec3 step = TRACE_STEP * Camera::getActiveCam()->getForward();	// scaled down version of forward vector
+		glm::vec3 tracePos = camPos;		// position the trace is currently checking
+		glm::ivec3 lastBlock = Block::getBlockPositionFromGlobal(camPos);	// ignore block cam is currently in and any blocks that have already been checked
+		glm::ivec3 traceBlock;	// block the trace is in
+
+		static const int ITERATIONS = TRACE_RANGE / TRACE_STEP;	// number of iterations of trace loop to run
+
+		for (int i = 0; i < ITERATIONS; i++) {
+			tracePos += step;	// update trace position
+
+			traceBlock = Block::getBlockPositionFromGlobal(tracePos);	// block the trace is currently in
+
+			// if this is the camera's block, ignore it
+			if (traceBlock == lastBlock) {
+				continue;
+			}
+
+			// check if the block exists, 
+			if (Chunk::checkBlock(traceBlock.x, traceBlock.y, traceBlock.z)) {
+				// remove block, update chunk, and stop
+				Chunk::removeBlock(traceBlock.x, traceBlock.y, traceBlock.z);
+				updateChunk(traceBlock.x, traceBlock.z);
+				return;
+			}
+
+			// update lastBlock
+			lastBlock = traceBlock;
+		}
+	}
+
+	// mouse clicks
+	void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+		if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_1) {
+			leftClick();
+		}
+	}
+
+	// deals with key presses
+	// delta is used to make sure movement speed doesn't change based on computer performance
+	void processKeys(GLFWwindow* window, float delta) {
+		float camSpeed = MOVE_SPEED * delta; 
+
+		// process key presses
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			Camera::getActiveCam()->translate(Camera::getActiveCam()->getForward() * camSpeed);
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			Camera::getActiveCam()->translate(Camera::getActiveCam()->getForward() * -camSpeed);
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			Camera::getActiveCam()->translate(Camera::getActiveCam()->getRight() * -camSpeed);
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			Camera::getActiveCam()->translate(Camera::getActiveCam()->getRight() * camSpeed);
+		}
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+			Camera::getActiveCam()->translate(Camera::getActiveCam()->getUp() * camSpeed);
+		}
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+			Camera::getActiveCam()->translate(Camera::getActiveCam()->getUp() * -camSpeed);
+		}
 	}
 
 	void startGame(GLFWwindow* window) {

@@ -31,6 +31,8 @@ public:
 	static const Vertex RIGHT_FACE[6];
 	static const Vertex LEFT_FACE[6];
 
+	static glm::ivec3 getBlockPositionFromGlobal(glm::vec3 pos);	// returns the block position that pos is in
+
 	Block(std::string name, int x, int y, int z);		// position set to (x, y, z)
 
 	std::string getName();		// returns the name of this block

@@ -32,9 +32,11 @@ public:
 	static void updateAllChunks(bool& doneUpdating);		// updates all the chunks in the chunk list. doneUpdating changes when updating is done
 
 	static void getChunkPosition(int global, int globalZ, int& chunk, int& chunkZ);	// gets the chunk position containing the global position (x, y, z), y = anything
-	static void addBlock(std::string blockName, int x, int y, int z);	// add the given block to correct chunk at position (x, y, z) in global coords
-	static void removeBlock(int x, int y, int z);	// remove and return the block at (x, y, z) in global coords
 	static uint32_t getChunkIndex(int x, int z);	// returns the map key corresponding to this x and z
+
+	static void addBlock(std::string blockName, int x, int y, int z);	// add the given block to correct chunk at position (x, y, z) in global coords
+	static void removeBlock(int x, int y, int z);	// remove the block at (x, y, z) in global coords
+	static bool checkBlock(int x, int y, int z);	// returns whether or not a block exists at the given global coords
 
 	Chunk(glm::ivec2 pos);	// create a chunk at the given (x, z)
 	~Chunk();
