@@ -87,6 +87,39 @@ uint32_t Chunk::getChunkIndex(int x, int z) {
 	return (x << 16) + z;
 }
 
+void Chunk::markNeighborsForUpdate(int localX, int localZ) {
+	// check x
+	if (localX == 0) {
+		// left edge
+		if (neighborChunks[3] != nullptr) {
+			neighborChunks[3]->dataUpdated = false;
+			neighborChunks[3]->bufferUpdated = false;
+		}
+	}
+	else if (localX == CHUNK_SIZE - 1) {
+		// right edge
+		if (neighborChunks[1] != nullptr) {
+			neighborChunks[1]->dataUpdated = false;
+			neighborChunks[1]->bufferUpdated = false;
+		}
+	}
+	// check z
+	if (localZ == 0) {
+		// front edge
+		if (neighborChunks[0] != nullptr) {
+			neighborChunks[0]->dataUpdated = false;
+			neighborChunks[0]->bufferUpdated = false;
+		}
+	}
+	else if (localZ == CHUNK_SIZE - 1) {
+		// back edge
+		if (neighborChunks[2] != nullptr) {
+			neighborChunks[2]->dataUpdated = false;
+			neighborChunks[2]->bufferUpdated = false;
+		}
+	}
+}
+
 void Chunk::addBlock(std::string blockName, int x, int y, int z) {
 	// make sure block is in bounds vertically
 	if (y < 0 || y >= WORLD_HEIGHT) {
@@ -114,6 +147,9 @@ void Chunk::addBlock(std::string blockName, int x, int y, int z) {
 	// set update flags
 	chunk->dataUpdated = false;
 	chunk->bufferUpdated = false;
+
+	// update neighbors if needed
+	chunk->markNeighborsForUpdate(x - chunkX, z - chunkZ);
 }
 
 void Chunk::removeBlock(int x, int y, int z) {
@@ -147,6 +183,9 @@ void Chunk::removeBlock(int x, int y, int z) {
 	// set update flags
 	chunk->dataUpdated = false;
 	chunk->bufferUpdated = false;
+
+	// update neighbors if needed
+	chunk->markNeighborsForUpdate(x - chunkX, z - chunkZ);
 }
 
 bool Chunk::checkBlock(int x, int y, int z) {

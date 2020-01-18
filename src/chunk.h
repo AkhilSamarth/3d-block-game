@@ -21,10 +21,14 @@ private:													// key is formatted as: (x << 16 + z), i.e. first 16 bits =
 	unsigned int vaoId, bufferId;		// id of the vao that holds this chunk
 	glm::mat4 model;	// model matrix
 
+	void addNeighbor(Chunk* chunk);		// add a neighboring chunk
 	void addFace(const Vertex* face, int x, int y, int z, int uOffset, int vOffset);	// calculate and add the vertices for this face, (x, y, z) = local position, x/y Offset = position in block spritesheet 
 
 	void updateBlockFaces();	// set which faces of each block are exposed
 	void updateVerts();		// update the verts vector with the correct vertices
+
+	void markNeighborsForUpdate(int localX, int localZ);	// marks the neighbor chunks of the block at (localX, localZ) in local coords (0 to CHUNK_SIZE) for update if needed
+
 public:
 	static std::map<uint32_t, Chunk*> chunkList;		// a list of all the chunks mapped using a key based on chunk position
 														// index is (x << 16 + z), i.e. first 16 bits are x, last 16 are z
@@ -41,7 +45,6 @@ public:
 	Chunk(glm::ivec2 pos);	// create a chunk at the given (x, z)
 	~Chunk();
 
-	void addNeighbor(Chunk* chunk);		// add a neighboring chunk
 	void updateData();		// update the block faces and vertices of this chunk
 	void updateBuffer();		// update this chunk's buffer
 	bool isDataUpdated();	// whether or not the face/vertex data of this chunk is up to date

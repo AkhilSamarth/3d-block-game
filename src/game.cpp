@@ -52,8 +52,6 @@ namespace Game {
 	// update single chunk, the one containing global position (x, ~ ,z)
 	// doesn't create a separate thread
 	void updateChunk(int x, int z) {
-		printf("updating chunk containing: %d, %d\n", x, z);
-
 		int chunkX, chunkZ;
 		Chunk::getChunkPosition(x, z, chunkX, chunkZ);
 		int chunkIndex = Chunk::getChunkIndex(chunkX, chunkZ);
@@ -68,7 +66,6 @@ namespace Game {
 	// update chunks based on block
 	// same as updateChunk, but also updates neighbor chunks for edge and corner blocks
 	void updateBlock(int x, int z) {
-		printf("block: %d, %d\n", x, z);
 		// update current chunk
 		updateChunk(x, z);
 
@@ -81,23 +78,19 @@ namespace Game {
 		// check if neighbors need updating
 		// check x
 		if (localX == 0) {
-			printf("left\n");
 			// left edge
 			updateChunk(x - 1, z);
 		}
 		else if (localX == CHUNK_SIZE - 1) {
-			printf("right\n");
 			// right edge
 			updateChunk(x + 1, z);
 		}
 		// check z
 		if (localZ == 0) {
-			printf("front\n");
 			// front edge
 			updateChunk(x, z - 1);
 		}
 		else if (localZ == CHUNK_SIZE - 1) {
-			printf("back\n");
 			// back edge
 			updateChunk(x, z + 1);
 		}
