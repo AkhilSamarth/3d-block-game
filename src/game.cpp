@@ -80,8 +80,8 @@ namespace Game {
 				// update all chunks instead
 				return new std::thread(Chunk::updateAllChunks, doneUpdating);
 			}
-			Chunk* starter = Chunk::chunkList[chunkIndex];
 
+			Chunk* starter = Chunk::chunkList[chunkIndex];
 			return new std::thread(Chunk::updateChunksByNeighbor, starter, doneUpdating);
 		}
 		else {
@@ -91,7 +91,20 @@ namespace Game {
 		running = false;
 	}
 
-	std::thread* loadSingleChunk() {}
+	// loads one chunk, the one containing global position (x, y)
+	// doesn't create a separate thread
+	void loadSingleChunk(int x, int y) {
+		int chunkX, chunkZ;
+		Chunk::getChunkPosition(x, y, chunkX, chunkZ);
+		int chunkIndex = Chunk::getChunkIndex(chunkX, chunkZ);
+		if (Chunk::chunkList.find(chunkIndex) == Chunk::chunkList.end()) {
+			std::cerr << "Attempted to update non-existant chunk containing position (" << x << ", " << y << ")." << std::endl;
+			return;
+		}
+		
+		// update chunk
+		Chunk::chunkList[chunkIndex]->updateData();
+	}
 
 	void startGame(GLFWwindow* window) {
 		// mouse input setup
@@ -101,10 +114,11 @@ namespace Game {
 		float delta = glfwGetTime();		// used to keep track of time between loop iterations
 
 		bool chunkLoaderDone = false;	// used to join chunk loading threads once loading finishes
-		std::thread* chunkLoader;		// keep track of the chunk loading thread
+		std::thread* chunkLoader = nullptr;		// keep track of the chunk loading thread
 
 		// initial chunk load
-		chunkLoader = Game::loadChunks(true, chunkLoaderDone);
+		//chunkLoader = Game::loadChunks(true, chunkLoaderDone);
+		Game::loadSingleChunk(0, 0);
 
 		// keep running until window should close (same as rendering loop)
 		while (!glfwWindowShouldClose(window)) {
