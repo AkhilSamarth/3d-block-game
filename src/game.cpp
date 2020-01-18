@@ -91,9 +91,9 @@ namespace Game {
 		running = false;
 	}
 
-	// loads one chunk, the one containing global position (x, y)
+	// update single chunk, the one containing global position (x, y)
 	// doesn't create a separate thread
-	void loadSingleChunk(int x, int y) {
+	void updateChunk(int x, int y) {
 		int chunkX, chunkZ;
 		Chunk::getChunkPosition(x, y, chunkX, chunkZ);
 		int chunkIndex = Chunk::getChunkIndex(chunkX, chunkZ);
@@ -117,8 +117,7 @@ namespace Game {
 		std::thread* chunkLoader = nullptr;		// keep track of the chunk loading thread
 
 		// initial chunk load
-		//chunkLoader = Game::loadChunks(true, chunkLoaderDone);
-		Game::loadSingleChunk(0, 0);
+		chunkLoader = Game::loadChunks(true, chunkLoaderDone);
 
 		// keep running until window should close (same as rendering loop)
 		while (!glfwWindowShouldClose(window)) {
