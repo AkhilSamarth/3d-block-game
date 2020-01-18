@@ -132,11 +132,10 @@ int Block::getSpriteHeight() {
 	return spriteHeight;
 }
 
+Block::Block(std::string name, int x, int y, int z) : name(name), pos(glm::vec3(x, y, z)), exposedFaces(0) {}
 
-Block::Block(int x, int y, int z, BlockTexture texture) : texture(texture), pos(glm::vec3(x, y, z)), exposedFaces(0) {}
-
-BlockTexture Block::getTexture() {
-	return texture;
+std::string Block::getName() {
+	return name;
 }
 
 void Block::setFace(unsigned char bits) {

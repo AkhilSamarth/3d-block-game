@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "chunk.h"
+#include "texture.h"
 
 std::map<uint32_t, Chunk*> Chunk::chunkList = std::map<uint32_t, Chunk*>();
 
@@ -74,7 +75,7 @@ void Chunk::getChunkPosition(int globalX, int globalZ, int& chunkX, int& chunkZ)
 	}
 }
 
-void Chunk::addBlock(int x, int y, int z, BlockTexture texture) {
+void Chunk::addBlock(std::string blockName, int x, int y, int z) {
 	// make sure block is in bounds vertically
 	if (y < 0 || y >= WORLD_HEIGHT) {
 		std::cerr << "Attempted to add block out of bounds (y = " << y << ")." << std::endl;
@@ -96,7 +97,7 @@ void Chunk::addBlock(int x, int y, int z, BlockTexture texture) {
 
 	// add block to the right chunk
 	Chunk* chunk = chunkList[chunkIndex];
-	chunk->blocks[x - chunkX][y][z - chunkZ] = new Block(x - chunkX, y, z - chunkZ, texture);
+	chunk->blocks[x - chunkX][y][z - chunkZ] = new Block(blockName, x - chunkX, y, z - chunkZ);
 
 	// set update flags
 	chunk->dataUpdated = false;
@@ -360,7 +361,10 @@ void Chunk::updateVerts() {
 				}
 
 				// get texture
-				BlockTexture texture = block->getTexture();
+				if (getBlockTextures().find(block->getName()) == getBlockTextures().end()) {
+					std::cerr << "Warning: block texture for block named \"" << block->getName() << "\" not found.";
+				}
+				BlockTexture texture = getBlockTextures().at(block->getName());
 
 				// this texture's position in the spritesheet
 				glm::ivec2 textureOffset;

@@ -44,6 +44,7 @@ int main(void)
 	// add block texture
 	Block::addBlockTextureOffset("test", 0, 0);
 	Block::addBlockTextureOffset("testInv", 1, 0);
+	addBlockTexture("testBlock", BlockTexture("test"));
 	Block::loadSpritesheet();
 
 	// create shader program
@@ -68,7 +69,7 @@ int main(void)
 	Chunk::removeBlock(5, 30, 6);
 	Chunk::removeBlock(0, 31, 0);
 	*/
-	Chunk::addBlock(0, 0, 0, BlockTexture("test"));
+	Chunk::addBlock("testBlock", 0, 0, 0);
 	
 	std::thread chunkLoader = std::thread(Chunk::updateChunksByNeighbor, Chunk::chunkList[Chunk::getChunkIndex(0, 0)]);
 

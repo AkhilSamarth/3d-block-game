@@ -11,6 +11,15 @@ std::map<std::string, unsigned int>& getTextureMap() {
 	return textureMap;
 }
 
+std::map<std::string, BlockTexture>& getBlockTextures() {
+	static std::map<std::string, BlockTexture> blockTextures;
+	return blockTextures;
+}
+
+void addBlockTexture(std::string blockName, BlockTexture texture) {
+	getBlockTextures().insert(std::pair<std::string, BlockTexture>(blockName, texture));
+}
+
 unsigned int getTextureId(std::string name) {
 	if (getTextureMap().find(name) == getTextureMap().end()) {
 		std::cerr << "Texture not found." << std::endl;

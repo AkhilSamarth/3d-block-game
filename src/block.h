@@ -19,28 +19,13 @@
 
 // forward declarations
 struct Vertex;
-
-// simple struct to encapsulate all texture names for a block
-struct BlockTexture {
-	std::string top;
-	std::string bottom;
-	std::string left;
-	std::string right;
-	std::string front;
-	std::string back;
-
-	BlockTexture(std::string top, std::string bottom, std::string left, std::string right, std::string front, std::string back)
-		: top(top), bottom(bottom), left(left), right(right), front(front), back(back) {}
-
-	BlockTexture(std::string allSides)
-		: top(allSides), bottom(allSides), left(allSides), right(allSides), front(allSides), back(allSides) {}
-};
+struct BlockTexture;
 
 class Block {
 private:
 	glm::ivec3 pos;		// position of left, bottom, front corner (lowest x, y, z) along integer grid
 	unsigned char exposedFaces;		// 1 byte bitmask for which faces are exposed
-	BlockTexture texture;	// texture for block
+	std::string name;	// name of this block
 
 	static bool spriteLoaded;	// whether or not the spritesheet has been loaded
 	static int spriteWidth, spriteHeight;	// dimensions of sprite sheet
@@ -61,9 +46,9 @@ public:
 	static int getSpriteWidth();	// returns the width of the spritesheet
 	static int getSpriteHeight();	// returns the height of the spritesheet
 
-	Block(int x, int y, int z, BlockTexture texture);		// position set to (x, y, z)
+	Block(std::string name, int x, int y, int z);		// position set to (x, y, z)
 
-	BlockTexture getTexture();		// returns the texture
+	std::string getName();		// returns the name of this block
 
 	void setFace(unsigned char bits);		// sets which faces are exposed (e.g. setFaces(BIT_FACE_TOP | BIT_FACE_FRONT))
 	void resetFace(unsigned char bits);		// sets which faces are not exposed (see example above)
