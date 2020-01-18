@@ -107,10 +107,6 @@ namespace Game {
 	}
 
 	void startGame(GLFWwindow* window) {
-		// mouse input setup
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwSetCursorPosCallback(window, mouseCallback);
-
 		float delta = glfwGetTime();		// used to keep track of time between loop iterations
 
 		bool chunkLoaderDone = false;	// used to join chunk loading threads once loading finishes

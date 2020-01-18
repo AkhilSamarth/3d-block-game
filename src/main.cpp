@@ -75,6 +75,11 @@ int main(void) {
 	Camera cam;
 	cam.activate();
 
+	// set up mouse input
+	// mouse input setup
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, Game::mouseCallback);
+
 	// start game loop
 	std::thread* gameThread = startGame(window);
 
