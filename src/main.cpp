@@ -15,8 +15,7 @@
 #define SHOW_FPS true
 #define FPS_COUNTER_INTERVAL 0.5	// how often (in seconds) to print FPS
 
-int main(void)
-{
+int main(void) {
 	GLFWwindow* window;
 
 	/* Initialize the library */
@@ -45,7 +44,7 @@ int main(void)
 	glClearColor(0, 0.765, 1, 1);
 
 	// load textures
-	loadTextures();
+	Texture::loadTextures();
 
 	// create shader program
 	Shader shader;

@@ -321,8 +321,8 @@ void Chunk::updateBlockFaces() {
 
 void Chunk::addFace(const Vertex* face, int x, int y, int z, int uOffset, int vOffset) {
 	// calculate the size of a single block in spritesheet coordinates
-	static const float BLOCK_SIZE_X = 1.0f * BLOCK_SPRITE_UNIT / Block::getSpriteWidth();
-	static const float BLOCK_SIZE_Y = 1.0f * BLOCK_SPRITE_UNIT / Block::getSpriteHeight();
+	static const float BLOCK_SIZE_X = 1.0f * Texture::getBlockSpritesheetUnit() / Texture::getBlockSpritesheetWidth();
+	static const float BLOCK_SIZE_Y = 1.0f * Texture::getBlockSpritesheetUnit() / Texture::getBlockSpritesheetHeight();
 
 	// loop through all 6 verts of this face
 	for (const Vertex* vertPtr = face; vertPtr < face + 6; vertPtr++) {
@@ -361,37 +361,37 @@ void Chunk::updateVerts() {
 				}
 
 				// get texture
-				if (getBlockTextures().find(block->getName()) == getBlockTextures().end()) {
+				if (Texture::getBlockTextureMap().find(block->getName()) == Texture::getBlockTextureMap().end()) {
 					std::cerr << "Warning: block texture for block named \"" << block->getName() << "\" not found." << std::endl;
 				}
-				BlockTexture texture = getBlockTextures().at(block->getName());
+				BlockTexture texture = Texture::getBlockTextureMap().at(block->getName());
 
 				// this texture's position in the spritesheet
 				glm::ivec2 textureOffset;
 
 				// add exposed faces
 				if (block->getFace(BIT_FACE_TOP)) {
-					textureOffset = Block::getBlockTextureOffset(texture.top);
+					textureOffset = Texture::getBlockTextureOffset(texture.top);
 					addFace(Block::TOP_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_BOTTOM)) {
-					textureOffset = Block::getBlockTextureOffset(texture.bottom);
+					textureOffset = Texture::getBlockTextureOffset(texture.bottom);
 					addFace(Block::BOTTOM_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_LEFT)) {
-					textureOffset = Block::getBlockTextureOffset(texture.left);
+					textureOffset = Texture::getBlockTextureOffset(texture.left);
 					addFace(Block::LEFT_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_RIGHT)) {
-					textureOffset = Block::getBlockTextureOffset(texture.right);
+					textureOffset = Texture::getBlockTextureOffset(texture.right);
 					addFace(Block::RIGHT_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_FRONT)) {
-					textureOffset = Block::getBlockTextureOffset(texture.front);
+					textureOffset = Texture::getBlockTextureOffset(texture.front);
 					addFace(Block::FRONT_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 				if (block->getFace(BIT_FACE_BACK)) {
-					textureOffset = Block::getBlockTextureOffset(texture.back);
+					textureOffset = Texture::getBlockTextureOffset(texture.back);
 					addFace(Block::BACK_FACE, x, y, z, textureOffset.x, textureOffset.y);
 				}
 			}

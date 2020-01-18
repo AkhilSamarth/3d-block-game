@@ -98,7 +98,7 @@ void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
 	unsigned int modelLoc = glGetUniformLocation(shaderId, "model");
 
 	// bind block sheet
-	Block::bindSpritesheet(shaderId);
+	Texture::bindBlockSpritesheet(shaderId);
 
 	// get the chunk list and loop through it
 	for (auto entry = Chunk::chunkList.begin(); entry != Chunk::chunkList.end(); entry++) {
