@@ -70,9 +70,11 @@ namespace Game {
 		doneUpdating = false;
 
 		if (byNeighbor) {
-			// get cam position
+			// get chunk based on cam position
 			glm::vec3 camPos = Camera::getActiveCam()->getPosition();
-			uint32_t chunkIndex = Chunk::getChunkIndex(camPos.x, camPos.z);
+			int chunkX, chunkZ;
+			Chunk::getChunkPosition(camPos.x, camPos.z, chunkX, chunkZ);
+			uint32_t chunkIndex = Chunk::getChunkIndex(chunkX, chunkZ);
 			if (Chunk::chunkList.find(chunkIndex) == Chunk::chunkList.end()) {
 				std::cerr << "Active cam is in non-existant chunk. Updating all chunks." << std::endl;
 				// update all chunks instead
@@ -88,6 +90,8 @@ namespace Game {
 
 		running = false;
 	}
+
+	std::thread* loadSingleChunk() {}
 
 	void startGame(GLFWwindow* window) {
 		// mouse input setup
