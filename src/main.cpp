@@ -71,8 +71,6 @@ int main(void) {
 		}
 	}
 	
-	std::thread chunkLoader = std::thread(Chunk::updateChunksByNeighbor, Chunk::chunkList[Chunk::getChunkIndex(0, 0)]);
-
 	// create and activate camera
 	Camera cam;
 	cam.activate();
@@ -112,8 +110,6 @@ int main(void) {
 	// wait for game loop to end
 	gameThread->join();
 	delete gameThread;
-
-	chunkLoader.join();
 
 	glfwTerminate();
 	return 0;
