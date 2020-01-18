@@ -7,7 +7,7 @@
 
 #include "drawing.h"
 #include "texture.h"
-
+#include "chunk.h"
 
 Shader::Shader() : progInit(false) {
 	progId = glCreateProgram();
@@ -80,27 +80,44 @@ void Shader::linkProgram() {
 	progInit = true;
 }
 
-void drawBlocks(std::vector<Block> blocks, unsigned int shaderId, glm::mat4& camMatrix, std::string texture) {
-	glUseProgram(shaderId);	// activate shader
+std::ostream& operator<<(std::ostream& out, Vertex& vert) {
+	out << "Vertex: [position: (" << vert.pos[0] << ", " << vert.pos[1] << ", " << vert.pos[2] << "), "
+		<< "texture coords: (" << vert.texturePos[0] << ", " << vert.texturePos[1] << ")]";
+	return out;
+}
 
-	// send camera matrix
+void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
+	// activate the shader
+	glUseProgram(shaderId);
+
+	// send cam matrix
 	unsigned int camLoc = glGetUniformLocation(shaderId, "camera");
 	glUniformMatrix4fv(camLoc, 1, GL_FALSE, glm::value_ptr(camMatrix));
 
 	// find model location
 	unsigned int modelLoc = glGetUniformLocation(shaderId, "model");
 
-	// bind block VAO
-	Block::bindVao();
+	// bind block sheet
+	Block::bindSpritesheet(shaderId);
 
-	// bind texture
-	bindTexture(texture, shaderId);
+	// get the chunk list and loop through it
+	for (auto entry = Chunk::chunkList.begin(); entry != Chunk::chunkList.end(); entry++) {
+		Chunk* chunk = entry->second;	// current chunk
 
-	// loop through blocks
-	for (auto& block : blocks) {
-		// send model matrix
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(block.getModelMatrix()));
+		// skip if the chunk isn't updated
+		if (!chunk->isDataUpdated()) {
+			continue;
+		}
 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// update buffer
+		chunk->updateBuffer();
+
+		// send model
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(chunk->getModelMatrix()));
+
+		// bind vao and draw
+		glBindVertexArray(chunk->getVaoId());
+
+		glDrawArrays(GL_TRIANGLES, 0, chunk->getVertexCount());
 	}
 }

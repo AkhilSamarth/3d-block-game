@@ -1,14 +1,14 @@
 #include <iostream>
-#include <thread>
-#include <chrono>
-
+#include <GL/glew.h>
 #include <GLFW\glfw3.h>
 
+#include "game.h"
 #include "camera.h"
 
-void mouseCallback(GLFWwindow* window, double x, double y) {
-	static const float sensitivity = 0.08;
+#define MOUSE_SENS 0.08		// mouse sensitivity
+#define MOVE_SPEED 5		// speed on key presses (units per second)
 
+static void mouseCallback(GLFWwindow* window, double x, double y) {
 	// need to keep track of previous x and y to calculate deltas
 	static double lastX = x;
 	static double lastY = y;
@@ -18,17 +18,18 @@ void mouseCallback(GLFWwindow* window, double x, double y) {
 	double deltaY = y - lastY;
 
 	// rotate camera
-	Camera::getActiveCam()->rotateYaw(-deltaX * sensitivity);
-	Camera::getActiveCam()->rotatePitch(-deltaY * sensitivity);
+	Camera::getActiveCam()->rotateYaw(-deltaX * MOUSE_SENS);
+	Camera::getActiveCam()->rotatePitch(-deltaY * MOUSE_SENS);
 
 	// update "last" vars
 	lastX = x;
 	lastY = y;
 }
 
-void processKeys(GLFWwindow* window) {
-	// how fast camera should move when a key is pressed
-	static const float camSpeed = 0.05;
+// deals with key presses
+// delta is used to make sure movement speed doesn't change based on computer performance
+static void processKeys(GLFWwindow* window, float delta) {
+	float camSpeed = MOVE_SPEED * delta;
 
 	// process key presses
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -51,30 +52,23 @@ void processKeys(GLFWwindow* window) {
 	}
 }
 
-void startGame(GLFWwindow* window) {
-	using namespace std::chrono;	// chrono being used for timekeeping to limit loop
-
-	// how many ticks per second the game should run at (iterations of game loop per second)
-	static const double TPS = 100;
-	static const uint64_t MICROS_PER_TICK = 1000000 / TPS;		// the number of microseconds between each tick
-	static uint64_t lastTime = (duration_cast<microseconds>(steady_clock::now().time_since_epoch())).count();
-
+static void startGameHelper(GLFWwindow* window) {
 	// mouse input setup
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouseCallback);	// add mouse callback
 
+	float delta = glfwGetTime();		// used to keep track of time between loop iterations
 	// keep running until window should close (same as rendering loop)
 	while (!glfwWindowShouldClose(window)) {
-		lastTime = (duration_cast<microseconds>(steady_clock::now().time_since_epoch())).count();		// update lastTime
-		
-		processKeys(window);
+		float loopStartTime = glfwGetTime();	// used to update delta
+		processKeys(window, delta);
+	
 
-		// make sure loop stays below TPS
-		uint64_t currentTime = (duration_cast<microseconds>(steady_clock::now().time_since_epoch())).count();
-		uint64_t delta = currentTime - lastTime;	// time taken for loop to complete
-		if (delta < MICROS_PER_TICK) {
-			uint64_t timeRemaining = MICROS_PER_TICK - delta;		// time until next loop should run
-			std::this_thread::sleep_for(microseconds(timeRemaining));
-		}
+
+		delta = glfwGetTime() - loopStartTime;
 	}
+}
+
+std::thread* startGame(GLFWwindow* window) {
+	return new std::thread(startGameHelper, window);
 }

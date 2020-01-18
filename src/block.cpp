@@ -2,117 +2,159 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <stb_image.h>
 
 #include "block.h"
 #include "drawing.h"
+#include "texture.h"
 
-// initalize static members
-unsigned int Block::vaoId = 0;
-bool Block::vaoInit = false;
+std::map<std::string, glm::ivec2> Block::blockOffsets = std::map<std::string, glm::ivec2>();
 
-void Block::initVao() {
-	// create and bind a VAO
-	glGenVertexArrays(1, &vaoId);
-	glBindVertexArray(vaoId);
+bool Block::spriteLoaded = false;
+int Block::spriteWidth = 0;
+int Block::spriteHeight = 0;
 
-	// create and bind the VBO for this VAO
-	unsigned int bufferId;
-	glGenBuffers(1, &bufferId);
-	glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+// fill data arrays for a block that's centered at (0, 0, 0)
+// arranged as:
+//			position				texture coords
+const Vertex Block::TOP_FACE[6] = { 
+			0.5, 0.5, 0.5,			1, 0,
+			0.5, 0.5, -0.5,			1, 1,
+			-0.5, 0.5, -0.5,		0, 1,
 
-	// data for a 1x1x1 cube with appropriate texture coordinates
-	Vertex verts[36] = {
-		// position				// texture coords
-		// top
-		0.5, 0.5, 0.5,			1, 0,
-		0.5, 0.5, -0.5,			1, 1,
-		-0.5, 0.5, -0.5,		0, 1,
+			-0.5, 0.5, 0.5,			0, 0,
+			0.5, 0.5, 0.5,			1, 0,
+			-0.5, 0.5, -0.5,		0, 1};
 
-		-0.5, 0.5, 0.5,			0, 0,
-		0.5, 0.5, 0.5,			1, 0,
-		-0.5, 0.5, -0.5,		0, 1,
+const Vertex Block::BOTTOM_FACE[6] = {
+			-0.5, -0.5, -0.5,		0, 1,
+			0.5, -0.5, -0.5,		1, 1,
+			0.5, -0.5, 0.5,			1, 0,
 
-		// bottom
-		-0.5, -0.5, -0.5,		0, 1,
-		0.5, -0.5, -0.5,		1, 1,
-		0.5, -0.5, 0.5,			1, 0,
+			-0.5, -0.5, -0.5,		0, 1,
+			0.5, -0.5, 0.5,			1, 0,
+			-0.5, -0.5, 0.5,		0, 0};
 
-		-0.5, -0.5, -0.5, 		0, 1,
-		0.5, -0.5, 0.5,			1, 0,
-		-0.5, -0.5, 0.5,		0, 0,
+const Vertex Block::BACK_FACE[6] = { 
+			0.5, -0.5, 0.5,			1, 0,
+			0.5, 0.5, 0.5,			1, 1,
+			-0.5, 0.5, 0.5,			0, 1,
 
-		// front
-		0.5, -0.5, 0.5,			1, 0,
-		0.5, 0.5, 0.5,			1, 1,
-		-0.5, 0.5, 0.5,			0, 1,
+			-0.5, -0.5, 0.5,		0, 0,
+			0.5, -0.5, 0.5,			1, 0,
+			-0.5, 0.5, 0.5,			0, 1};
 
-		-0.5, -0.5, 0.5,		0, 0,
-		0.5, -0.5, 0.5,			1, 0,
-		-0.5, 0.5, 0.5,			0, 1,
+const Vertex Block::FRONT_FACE[6] = {
+			-0.5, 0.5, -0.5,		0, 1,
+			0.5, 0.5, -0.5,			1, 1,
+			0.5, -0.5, -0.5,		1, 0,
 
-		// back
-		-0.5, 0.5, -0.5,		0, 1,
-		0.5, 0.5, -0.5,			1, 1,
-		0.5, -0.5, -0.5, 		1, 0,
+			-0.5, 0.5, -0.5,		0, 1,
+			0.5, -0.5, -0.5,		1, 0,
+			-0.5, -0.5, -0.5,		0, 0};
 
-		-0.5, 0.5, -0.5,		0, 1,
-		0.5, -0.5, -0.5,		1, 0,
-		-0.5, -0.5, -0.5,		0,	0,
+const Vertex Block::RIGHT_FACE[6] = {
+			0.5, -0.5, -0.5,		0, 0,
+			0.5, 0.5, -0.5,			0, 1,
+			0.5, 0.5, 0.5,			1, 1,
 
+			0.5, -0.5, 0.5,			1, 0,
+			0.5, -0.5, -0.5,		0, 0,
+			0.5, 0.5, 0.5,			1, 1};
 
-		// right
-		0.5, -0.5, -0.5,		0, 0,
-		0.5, 0.5, -0.5,			0, 1,
-		0.5, 0.5, 0.5,			1, 1,
+const Vertex Block::LEFT_FACE[6] = {
+			-0.5, 0.5, 0.5,			1, 1,
+			-0.5, 0.5, -0.5,		0, 1,
+			-0.5, -0.5, -0.5,		0, 0,
 
-		0.5, -0.5, 0.5,			1, 0,
-		0.5, -0.5, -0.5,		0, 0,
-		0.5, 0.5, 0.5,			1, 1,
-		
+			-0.5, 0.5, 0.5,			1, 1,
+			-0.5, -0.5, -0.5,		0, 0,
+			-0.5, -0.5, 0.5,		1, 0};
 
-		// left
-		-0.5, 0.5, 0.5,			1, 1,
-		-0.5, 0.5, -0.5,		0, 1,
-		-0.5, -0.5, -0.5,		0, 0,
+void Block::loadSpritesheet() {
+	std::string path = BLOCK_SPRITE_PATH;	// do this so functions c_str can be used
 
-		-0.5, 0.5, 0.5, 		1, 1,
-		-0.5, -0.5, -0.5,		0, 0,
-		-0.5, -0.5, 0.5,		1, 0
-	};
+	// load image
+	int channels;
+	stbi_set_flip_vertically_on_load(true);		// makes sure the image is the right way up
+	unsigned char* data = stbi_load(path.c_str(), &spriteWidth, &spriteHeight, &channels, 0);
 
-	// fill buffer
-	glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(Vertex), verts, GL_STATIC_DRAW);
+	// generate texture
+	unsigned int textureId;
+	glGenTextures(1, &textureId);
 
-	// vertex attributes
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) 0);	// position
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) (3 * sizeof(float)));	// texture coordinates
-	glEnableVertexAttribArray(1);
+	// add id to map
+	getTextureMap()[BLOCK_SPRITE_NAME] = textureId;
 
-	vaoInit = true;
+	// bind texture and set parameters
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// fill with data
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, spriteWidth, spriteHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	// delete data
+	stbi_image_free(data);
+
+	// update flag
+	spriteLoaded = true;
 }
 
-Block::Block(int x, int y, int z, std::string textureName) : textureName(textureName) {
-	pos = glm::vec3(x, y, z);
-
-	// create model matrix
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(pos));
+void Block::addBlockTextureOffset(std::string name, int uOffset, int vOffset) {
+	blockOffsets[name] = glm::ivec2(uOffset, vOffset);
 }
 
-glm::mat4 Block::getModelMatrix() {
-	return model;
-}
-
-std::string Block::getTextureName() {
-	return textureName;
-}
-
-void Block::bindVao() {
-	// if the vao doesn't exist yet, create it
-	if (!vaoInit) {
-		initVao();
+glm::ivec2 Block::getBlockTextureOffset(std::string name) {
+	// check if the name exists
+	if (blockOffsets.find(name) == blockOffsets.end()) {
+		std::cerr << "Texture name \"" << name << "\" not found." << std::endl;
+		return glm::ivec2(0, 0);
 	}
 
-	glBindVertexArray(vaoId);
+	return blockOffsets[name];
+}
+
+void Block::bindSpritesheet(unsigned int shaderId) {
+	if (!spriteLoaded) {
+		std::cerr << "Attempted to bind block spritesheet without loading it in first!" << std::endl;
+		return;
+	}
+
+	bindTexture(BLOCK_SPRITE_NAME, shaderId);
+}
+
+int Block::getSpriteWidth() {
+	return spriteWidth;
+}
+
+int Block::getSpriteHeight() {
+	return spriteHeight;
+}
+
+Block::Block(std::string name, int x, int y, int z) : name(name), pos(glm::vec3(x, y, z)), exposedFaces(0) {}
+
+std::string Block::getName() {
+	return name;
+}
+
+void Block::setFace(unsigned char bits) {
+	exposedFaces |= bits;
+}
+
+void Block::resetFace(unsigned char bits) {
+	exposedFaces &= ~bits;
+}
+
+void Block::boolFace(unsigned char bits, bool status) {
+	if (status) {
+		setFace(bits);
+	}
+	else {
+		resetFace(bits);
+	}
+}
+
+bool Block::getFace(unsigned char bits) {
+	return exposedFaces & bits;
 }

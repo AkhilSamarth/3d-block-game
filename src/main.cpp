@@ -10,10 +10,10 @@
 #include "texture.h"
 #include "camera.h"
 #include "game.h"
+#include "chunk.h"
 
+#define SHOW_FPS true
 #define FPS_COUNTER_INTERVAL 0.5	// how often (in seconds) to print FPS
-
-static const bool showFPS = true;	// whether or not to print the FPS
 
 int main(void)
 {
@@ -41,29 +41,45 @@ int main(void)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
+	// set clear color to sky blue
+	glClearColor(0, 0.765, 1, 1);
+
 	// load textures
-	loadTexture("assetts/textures/test.png", "test");
+	loadTextures();
 
 	// create shader program
 	Shader shader;
 	shader.addShader("assetts/shaders/shader_vertex.glsl", GL_VERTEX_SHADER);
 	shader.addShader("assetts/shaders/shader_fragment.glsl", GL_FRAGMENT_SHADER);
 	shader.linkProgram();
-
+	
 	// test blocks
-	std::vector<Block> blocks;
-	for (int i = 0; i < 40; i++) {
-		for (int j = 0; j < 40; j++) {
-			blocks.push_back(Block(i, 0, -j, "test"));
+	for (int y = 0; y < 5; y++) {
+		std::string blockName;
+		if (y == 0 || y == 1) {
+			blockName = "stone";
+		}
+		else if (y == 2 || y == 3) {
+			blockName = "dirt";
+		}
+		else {
+			blockName = "grass";
+		}
+		for (int x = -25; x < 25; x++) {
+			for (int z = -25; z < 25; z++) {
+				Chunk::addBlock(blockName, x, y, z);
+			}
 		}
 	}
+	
+	std::thread chunkLoader = std::thread(Chunk::updateChunksByNeighbor, Chunk::chunkList[Chunk::getChunkIndex(0, 0)]);
 
 	// create and activate camera
 	Camera cam;
 	cam.activate();
 
 	// start game loop
-	std::thread gameThread(startGame, window);
+	std::thread* gameThread = startGame(window);
 
 	// timer for fps counter
 	double fpsTimer = glfwGetTime();
@@ -75,18 +91,18 @@ int main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
 		// get camera matrix
 		glm::mat4 camMatrix = Camera::getActiveCam()->getMatrix();
 
-		drawBlocks(blocks, shader.getProgramId(), camMatrix, "test");
-
+		// draw chunks
+		drawChunks(shader.getProgramId(), camMatrix);
+		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
 		// update FPS timer if needed
-		if (showFPS && (glfwGetTime() - fpsTimer >= FPS_COUNTER_INTERVAL)) {
-			printf("FPS: %f, sec per frame (1/FPS): %f\n", 1.0f / ((glfwGetTime() - renderStartTime)), (glfwGetTime() - renderStartTime));
+		if (SHOW_FPS && (glfwGetTime() - fpsTimer >= FPS_COUNTER_INTERVAL)) {
+			printf("FPS: %f, ms per frame: %f\n", 1.0f / ((glfwGetTime() - renderStartTime)), (glfwGetTime() - renderStartTime) * 1000);
 			fpsTimer = glfwGetTime();
 		}
 
@@ -95,7 +111,10 @@ int main(void)
 	}
 
 	// wait for game loop to end
-	gameThread.join();
+	gameThread->join();
+	delete gameThread;
+
+	chunkLoader.join();
 
 	glfwTerminate();
 	return 0;
