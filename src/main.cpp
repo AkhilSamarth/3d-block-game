@@ -70,6 +70,9 @@ int main(void) {
 			}
 		}
 	}
+
+	Chunk::addBlock("grass", 30, 10, -30);
+	Chunk::addBlock("stone", -30, 10, -30);
 	
 	// create and activate camera
 	Camera cam;
