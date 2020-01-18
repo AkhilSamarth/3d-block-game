@@ -362,7 +362,7 @@ void Chunk::updateVerts() {
 
 				// get texture
 				if (getBlockTextures().find(block->getName()) == getBlockTextures().end()) {
-					std::cerr << "Warning: block texture for block named \"" << block->getName() << "\" not found.";
+					std::cerr << "Warning: block texture for block named \"" << block->getName() << "\" not found." << std::endl;
 				}
 				BlockTexture texture = getBlockTextures().at(block->getName());
 
