@@ -52,28 +52,6 @@ int main(void) {
 	shader.addShader("assetts/shaders/shader_fragment.glsl", GL_FRAGMENT_SHADER);
 	shader.linkProgram();
 	
-	// test blocks
-	for (int y = 0; y < 5; y++) {
-		std::string blockName;
-		if (y == 0 || y == 1) {
-			blockName = "stone";
-		}
-		else if (y == 2 || y == 3) {
-			blockName = "dirt";
-		}
-		else {
-			blockName = "grass";
-		}
-		for (int x = -25; x < 25; x++) {
-			for (int z = -25; z < 25; z++) {
-				Chunk::addBlock(blockName, x, y, z);
-			}
-		}
-	}
-
-	Chunk::addBlock("grass", 30, 10, -30);
-	Chunk::addBlock("stone", -30, 10, -30);
-	
 	// create and activate camera
 	Camera cam;
 	cam.activate();

@@ -5,12 +5,15 @@
 #include "game.h"
 #include "camera.h"
 #include "chunk.h"
+#include "terrain.h"
 
 #define MOUSE_SENS 0.08		// mouse sensitivity
 #define MOVE_SPEED 5		// speed on key presses (units per second)
 
 #define TRACE_RANGE 4.0f	// how far the player can reach
 #define TRACE_STEP 0.01f	// interval at which block position is calculated (lower = more accurate, less performance)
+
+#define TERRAIN_DISTANCE 8	// how many chunks from camera to generate
 
 namespace Game {
 	// update chunks, either all or by neighbor
@@ -94,6 +97,19 @@ namespace Game {
 			// back edge
 			updateChunk(x, z + 1);
 		}
+	}
+
+	// genTerrain calls this function in its thread
+	void genTerrainHelper(GLFWwindow* window) {
+		// loop while window is open
+		while (!glfwWindowShouldClose(window)) {
+			printf("test\n");
+		}
+	}
+
+	// creates a thread to keep generating chunks within the given distance of the active cam
+	std::thread* genTerrain(GLFWwindow* window) {
+		return new std::thread(genTerrainHelper, window);
 	}
 
 	// mouse movement
@@ -185,6 +201,8 @@ namespace Game {
 	void startGame(GLFWwindow* window) {
 		float delta = glfwGetTime();		// used to keep track of time between loop iterations
 
+		std::thread* terrainGenThread = genTerrain(window);
+
 		bool chunkLoaderDone = false;	// used to join chunk loading threads once loading finishes
 		std::thread* chunkLoader = nullptr;		// keep track of the chunk loading thread
 
@@ -205,6 +223,10 @@ namespace Game {
 
 			delta = glfwGetTime() - loopStartTime;
 		}
+
+		// kill terrain gen thread
+		terrainGenThread->join();
+		delete terrainGenThread;
 	}
 }
 
