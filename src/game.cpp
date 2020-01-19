@@ -16,7 +16,7 @@ namespace Game {
 	// update chunks, either all or by neighbor
 	// if by neighbor, starts with chunk the camera is in
 	// doneUpdating changes to true when chunk updating is finished
-	std::thread* loadChunks(bool byNeighbor, bool& doneUpdating) {
+	std::thread* updateChunks(bool byNeighbor, bool& doneUpdating) {
 		static bool running = false;	// make sure only one chunk loader is running at a time
 
 		if (running) {
@@ -189,7 +189,7 @@ namespace Game {
 		std::thread* chunkLoader = nullptr;		// keep track of the chunk loading thread
 
 		// initial chunk load
-		chunkLoader = Game::loadChunks(true, chunkLoaderDone);
+		chunkLoader = Game::updateChunks(true, chunkLoaderDone);
 
 		// keep running until window should close (same as rendering loop)
 		while (!glfwWindowShouldClose(window)) {

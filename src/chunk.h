@@ -56,6 +56,8 @@ public:
 	Chunk(glm::ivec2 pos);	// create a chunk at the given (x, z)
 	~Chunk();
 
+	void generateBlocks(std::string(*terrainGen)(int x, int y, int z));		// fills this chunk with block using a terrain generator function (takes in global position, returns block name or empty str for no block)
+
 	void updateData();		// update the block faces and vertices of this chunk
 	void updateBuffer();		// update this chunk's buffer
 	bool isDataUpdated();	// whether or not the face/vertex data of this chunk is up to date

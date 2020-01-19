@@ -270,6 +270,34 @@ Chunk::~Chunk() {
 	chunkList.erase(getChunkIndex(pos.x, pos.z));
 }
 
+void Chunk::generateBlocks(std::string(*terrainGen)(int x, int y, int z)) {
+	// loop through all positions in this chunk, bottom to top
+	for (int y = 0; y < WORLD_HEIGHT; y++) {
+		for (int x = 0; x < CHUNK_SIZE; x++) {
+			for (int z = 0; z < CHUNK_SIZE; z++) {
+				// get string from terrain generator
+				std::string blockName = terrainGen(x, y, z);
+				
+				// if string is empty, this block should be empty
+				if (blockName == "") {
+					continue;
+				}
+
+				// fill block
+				blocks[x][y][z] = new Block(blockName, x, y, z);
+			}
+		}
+	}
+
+	// set update flags for this and for neighbors
+	dataUpdated = false;
+	bufferUpdated = false;
+
+	// mark all neighbors as not updated
+	markNeighborsForUpdate(0, 0);	// updates front, left
+	markNeighborsForUpdate(CHUNK_SIZE - 1, CHUNK_SIZE - 1);		// updates back, right 
+}
+
 void Chunk::updateBlockFaces() {
 	// loop through all chunk blocks
 	for (int x = 0; x < CHUNK_SIZE; x++) {
