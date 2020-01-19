@@ -1,4 +1,6 @@
 #include <iostream>
+#include <queue>
+#include <set>
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
 
@@ -13,7 +15,7 @@
 #define TRACE_RANGE 4.0f	// how far the player can reach
 #define TRACE_STEP 0.01f	// interval at which block position is calculated (lower = more accurate, less performance)
 
-#define TERRAIN_DISTANCE 8	// how many chunks from camera to generate
+#define TERRAIN_DISTANCE 8	// how many chunks from camera to generate (1 = neighbors, 2 = neighbor's neighbors, etc.)
 
 namespace Game {
 	// update chunks, either all or by neighbor
@@ -99,11 +101,69 @@ namespace Game {
 		}
 	}
 
+	// generate the chunk at (x, z) if it doesn't already exist
+	void genChunk(int x, int z) {
+		// make sure chunk doesn't already exist
+		uint32_t chunkIndex = Chunk::getChunkIndex(x, z);
+		if (Chunk::chunkList.find(chunkIndex) != Chunk::chunkList.end()) {
+			return;
+		}
+
+		// create chunk
+		Chunk* chunk = new Chunk(glm::ivec2(x, z));
+		chunk->generateBlocks(Terrain::flat10);
+		chunk->updateData();
+	}
+
 	// genTerrain calls this function in its thread
 	void genTerrainHelper(GLFWwindow* window) {
 		// loop while window is open
 		while (!glfwWindowShouldClose(window)) {
-			printf("test\n");
+			glm::vec3 camPos = Camera::getActiveCam()->getActiveCam()->getPosition();
+			int chunkX, chunkZ;
+			Chunk::getChunkPosition(camPos.x, camPos.z, chunkX, chunkZ);	// initially set to camera's chunk
+
+			// queue and set to keep track of outer chunks for each iteration, store chunk index
+			std::queue<uint32_t> chunksToGo;
+			std::set<uint32_t> chunksDone;
+
+			// add camera chunk to queue
+			chunksToGo.push(Chunk::getChunkIndex(chunkX, chunkZ));
+			chunksDone.insert(Chunk::getChunkIndex(chunkX, chunkZ));
+
+			for (int i = 0; i <= TERRAIN_DISTANCE; i++) {
+				// process everything currently in the queue
+				int queueSize = chunksToGo.size();
+				for (int j = 0; j < queueSize; j++) {
+					// generate current chunk
+					glm::ivec2 current = Chunk::getChunkPositionFromIndex(chunksToGo.front());
+					chunksToGo.pop();
+					printf("Generating chunk at (%d, %d)\n", current.x, current.y);
+					genChunk(current.x, current.y);
+
+					// add neighbors to queue if they haven't been processed
+					// right
+					if (chunksDone.find(Chunk::getChunkIndex(current + glm::ivec2(CHUNK_SIZE, 0))) == chunksDone.end()) {
+						chunksToGo.push(Chunk::getChunkIndex(current + glm::ivec2(CHUNK_SIZE, 0)));
+						chunksDone.insert(Chunk::getChunkIndex(current + glm::ivec2(CHUNK_SIZE, 0)));
+					}
+					// left
+					if (chunksDone.find(Chunk::getChunkIndex(current - glm::ivec2(CHUNK_SIZE, 0))) == chunksDone.end()) {
+						chunksToGo.push(Chunk::getChunkIndex(current - glm::ivec2(CHUNK_SIZE, 0)));
+						chunksDone.insert(Chunk::getChunkIndex(current - glm::ivec2(CHUNK_SIZE, 0)));
+					}
+					// front
+					if (chunksDone.find(Chunk::getChunkIndex(current - glm::ivec2(0, CHUNK_SIZE))) == chunksDone.end()) {
+						chunksToGo.push(Chunk::getChunkIndex(current - glm::ivec2(0, CHUNK_SIZE)));
+						chunksDone.insert(Chunk::getChunkIndex(current - glm::ivec2(0, CHUNK_SIZE)));
+					}
+					// back
+					if (chunksDone.find(Chunk::getChunkIndex(current + glm::ivec2(0, CHUNK_SIZE))) == chunksDone.end()) {
+						chunksToGo.push(Chunk::getChunkIndex(current + glm::ivec2(0, CHUNK_SIZE)));
+						chunksDone.insert(Chunk::getChunkIndex(current + glm::ivec2(0, CHUNK_SIZE)));
+					}
+				}
+			}
 		}
 	}
 
@@ -201,13 +261,16 @@ namespace Game {
 	void startGame(GLFWwindow* window) {
 		float delta = glfwGetTime();		// used to keep track of time between loop iterations
 
+		Camera::getActiveCam()->translate(glm::vec3(0, 15, 0));
+
+		// start terrain generation
 		std::thread* terrainGenThread = genTerrain(window);
 
 		bool chunkLoaderDone = false;	// used to join chunk loading threads once loading finishes
 		std::thread* chunkLoader = nullptr;		// keep track of the chunk loading thread
 
 		// initial chunk load
-		chunkLoader = Game::updateChunks(true, chunkLoaderDone);
+		//chunkLoader = Game::updateChunks(true, chunkLoaderDone);
 
 		// keep running until window should close (same as rendering loop)
 		while (!glfwWindowShouldClose(window)) {

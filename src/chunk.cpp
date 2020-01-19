@@ -85,7 +85,21 @@ void Chunk::getChunkPosition(int globalX, int globalZ, int& chunkX, int& chunkZ)
 }
 
 uint32_t Chunk::getChunkIndex(int x, int z) {
-	return (x << 16) + z;
+	// truncate x and z to 16 bits
+	uint16_t x16 = x & 0xffff;
+	uint16_t z16 = z & 0xffff;
+	
+	return (x16 << 16)  + z16;
+}
+
+uint32_t Chunk::getChunkIndex(glm::ivec2 pos) {
+	return getChunkIndex(pos.x, pos.y);
+}
+
+glm::ivec2 Chunk::getChunkPositionFromIndex(uint32_t index) {
+	int16_t x16 = (index & 0xffff0000) >> 16;		// right-most 16 bits are x
+	int16_t z16 = index & 0xffff;		// left-most 16 bits are z
+	return glm::ivec2(x16, z16);
 }
 
 void Chunk::markNeighborsForUpdate(int localX, int localZ) {

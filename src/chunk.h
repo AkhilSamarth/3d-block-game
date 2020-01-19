@@ -48,6 +48,8 @@ public:
 
 	static void getChunkPosition(int global, int globalZ, int& chunk, int& chunkZ);	// gets the chunk position containing the global position (x, y, z), y = anything
 	static uint32_t getChunkIndex(int x, int z);	// returns the map key corresponding to this x and z
+	static uint32_t getChunkIndex(glm::ivec2 pos);	// same as above, but takes in an ivec2
+	static glm::ivec2 getChunkPositionFromIndex(uint32_t index);	// returns a chunk position from an index
 
 	static void addBlock(std::string blockName, int x, int y, int z);	// add the given block to correct chunk at position (x, y, z) in global coords
 	static void removeBlock(int x, int y, int z);	// remove the block at (x, y, z) in global coords
@@ -56,7 +58,7 @@ public:
 	Chunk(glm::ivec2 pos);	// create a chunk at the given (x, z)
 	~Chunk();
 
-	void generateBlocks(std::string(*terrainGen)(int x, int y, int z));		// fills this chunk with block using a terrain generator function (takes in global position, returns block name or empty str for no block)
+	void generateBlocks(std::string(*terrainGen)(int x, int y, int z));		// fills this chunk with block using a terrain generator function (takes in global position, returns block name or )
 
 	void updateData();		// update the block faces and vertices of this chunk
 	void updateBuffer();		// update this chunk's buffer
