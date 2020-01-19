@@ -15,7 +15,7 @@
 #define TRACE_RANGE 4.0f	// how far the player can reach
 #define TRACE_STEP 0.01f	// interval at which block position is calculated (lower = more accurate, less performance)
 
-#define TERRAIN_DISTANCE 8	// how many chunks from camera to generate (1 = neighbors, 2 = neighbor's neighbors, etc.)
+#define TERRAIN_DISTANCE 4	// how many chunks from camera to generate (1 = neighbors, 2 = neighbor's neighbors, etc.)
 
 namespace Game {
 	// update chunks, either all or by neighbor
@@ -138,7 +138,6 @@ namespace Game {
 					// generate current chunk
 					glm::ivec2 current = Chunk::getChunkPositionFromIndex(chunksToGo.front());
 					chunksToGo.pop();
-					printf("Generating chunk at (%d, %d)\n", current.x, current.y);
 					genChunk(current.x, current.y);
 
 					// add neighbors to queue if they haven't been processed
@@ -164,6 +163,9 @@ namespace Game {
 					}
 				}
 			}
+
+			bool dummy = false;
+			Chunk::updateAllChunks(dummy);
 		}
 	}
 
