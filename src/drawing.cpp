@@ -105,7 +105,7 @@ void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
 		Chunk* chunk = entry->second;	// current chunk
 
 		// skip if the chunk isn't updated
-		if (!chunk->isDataUpdated()) {
+		if (chunk == nullptr || !chunk->isDataUpdated()) {
 			continue;
 		}
 

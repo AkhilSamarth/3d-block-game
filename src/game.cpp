@@ -10,12 +10,12 @@
 #include "terrain.h"
 
 #define MOUSE_SENS 0.08		// mouse sensitivity
-#define MOVE_SPEED 5		// speed on key presses (units per second)
+#define MOVE_SPEED 10		// speed on key presses (units per second)
 
 #define TRACE_RANGE 4.0f	// how far the player can reach
 #define TRACE_STEP 0.01f	// interval at which block position is calculated (lower = more accurate, less performance)
 
-#define TERRAIN_DISTANCE 4	// how many chunks from camera to generate (1 = neighbors, 2 = neighbor's neighbors, etc.)
+#define TERRAIN_DISTANCE 8	// how many chunks from camera to generate (1 = neighbors, 2 = neighbor's neighbors, etc.)
 
 namespace Game {
 	// update chunks, either all or by neighbor
