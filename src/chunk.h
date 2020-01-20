@@ -29,6 +29,7 @@ private:													// key is formatted as: (x << 16 + z), i.e. first 16 bits =
 	std::vector<Vertex> verts;	// all vertices of all faces which should be drawn of blocks in this chunk
 	bool dataUpdated;		// whether or not the block faces and verts of this chunk are up-to-date
 	bool bufferUpdated;		// whether or not the buffer is up to date
+	bool bufferCreated;		// whether or not the VAO and VBO have been created
 	unsigned int vaoId, bufferId;		// id of the vao that holds this chunk
 	glm::mat4 model;	// model matrix
 
@@ -61,12 +62,11 @@ public:
 	void generateBlocks(std::string(*terrainGen)(int x, int y, int z));		// fills this chunk with block using a terrain generator function (takes in global position, returns block name or )
 
 	void updateData();		// update the block faces and vertices of this chunk
-	void updateBuffer();		// update this chunk's buffer
+	unsigned int updateBuffer();		// update this chunk's buffer and return the VAO id
 	bool isDataUpdated();	// whether or not the face/vertex data of this chunk is up to date
 	bool isBufferUpdated();	// whether or not the buffer is up to date
 
 	glm::ivec3 getPosition();	// returns the position of this chunk
-	unsigned int getVaoId();		// return the vertices array
 	int getVertexCount();		// returns the total number of vertices of this chunk's vao
 	glm::mat4 getModelMatrix();		// returns this chunk's model matrix
 };

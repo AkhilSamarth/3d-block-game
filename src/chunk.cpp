@@ -152,7 +152,7 @@ void Chunk::addBlock(std::string blockName, int x, int y, int z) {
 
 	// check if a chunk exists at the given position, if not create it
 	if (chunkList.find(chunkIndex) == chunkList.end()) {
-		chunkList[chunkIndex] = new Chunk(glm::ivec2(chunkX, chunkZ));
+		new Chunk(glm::ivec2(chunkX, chunkZ));
 	}
 
 	// add block to the right chunk
@@ -263,20 +263,6 @@ Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Ver
 		neighborChunks.left = neighbor;
 		neighbor->addNeighbor(this);
 	}
-
-	// generate vao and set attributes
-	glGenVertexArrays(1, &vaoId);
-	glGenBuffers(1, &bufferId);
-
-	// bind buffer to vao
-	glBindVertexArray(vaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-
-	// set vertex attribs
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) 0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) (3 * sizeof(float)));
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
 }
 
 Chunk::~Chunk() {
@@ -506,21 +492,35 @@ void Chunk::updateVerts() {
 	}
 }
 
-void Chunk::updateBuffer() {
+unsigned int Chunk::updateBuffer() {
+	// if the VAO and VBO haven't been allocated, do that
+	if (!bufferCreated) {
+		// generate vao and set attributes
+		glGenVertexArrays(1, &vaoId);
+		glGenBuffers(1, &bufferId);
+
+		// bind buffer to vao
+		glBindVertexArray(vaoId);
+		glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+
+		// set vertex attribs
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+
+		// update flag
+		bufferCreated = true;
+	}
+
 	// if buffer is up to date, do nothing
 	if (bufferUpdated) {
-		return;
+		return vaoId;
 	}
 
 	// if data hasn't been updated, warn user and stop
 	if (!dataUpdated) {
-		std::cerr << "Attempted to update buffer without updating data." << std::endl;
-		return;
-	}
-
-	// if verts is empty, continue
-	if (verts.empty()) {
-		return;
+		std::cerr << "[Chunk buffer update] Warning: updating buffer with oudated data." << std::endl;
 	}
 
 	// update buffer with verts
@@ -528,6 +528,8 @@ void Chunk::updateBuffer() {
 
 	// update flag
 	bufferUpdated = true;
+
+	return vaoId;
 }
 
 void Chunk::addNeighbor(Chunk* chunk) {
@@ -589,15 +591,6 @@ bool Chunk::isBufferUpdated() {
 
 glm::ivec3 Chunk::getPosition() {
 	return pos;
-}
-
-unsigned int Chunk::getVaoId() {
-	// warn user if data is not up to date
-	if (!dataUpdated || !bufferUpdated) {
-		std::cout << "Warning: this chunk is not up to date" << std::endl;
-	}
-
-	return vaoId;
 }
 
 int Chunk::getVertexCount() {

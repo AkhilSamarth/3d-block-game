@@ -109,15 +109,13 @@ void drawChunks(unsigned int shaderId, glm::mat4& camMatrix) {
 			continue;
 		}
 
-		// update buffer
-		chunk->updateBuffer();
+		// update buffer and bind VAO
+		glBindVertexArray(chunk->updateBuffer());
 
 		// send model
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(chunk->getModelMatrix()));
-
-		// bind vao and draw
-		glBindVertexArray(chunk->getVaoId());
-
+		
+		//draw
 		glDrawArrays(GL_TRIANGLES, 0, chunk->getVertexCount());
 	}
 }
