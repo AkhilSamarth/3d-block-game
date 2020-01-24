@@ -102,17 +102,19 @@ namespace Game {
 	}
 
 	// generate the chunk at (x, z) if it doesn't already exist
-	void genChunk(int x, int z) {
+	// returns whether or not a chunk was generated
+	bool genChunk(int x, int z) {
 		// make sure chunk doesn't already exist
 		uint32_t chunkIndex = Chunk::getChunkIndex(x, z);
 		if (Chunk::chunkList.find(chunkIndex) != Chunk::chunkList.end()) {
-			return;
+			return false;
 		}
 
 		// create chunk
 		Chunk* chunk = new Chunk(glm::ivec2(x, z));
 		chunk->generateBlocks(Terrain::flat10);
-		chunk->updateData();
+
+		return true;
 	}
 
 	// genTerrain calls this function in its thread
@@ -138,7 +140,15 @@ namespace Game {
 					// generate current chunk
 					glm::ivec2 current = Chunk::getChunkPositionFromIndex(chunksToGo.front());
 					chunksToGo.pop();
-					genChunk(current.x, current.y);
+					// if this chunk was generated, update it and any neighbors it has
+					if (genChunk(current.x, current.y)) {
+						updateChunk(current.x, current.y);
+
+						updateChunk(current.x, current.y - CHUNK_SIZE);	// front
+						updateChunk(current.x + CHUNK_SIZE, current.y);	// right
+						updateChunk(current.x, current.y + CHUNK_SIZE);	// back
+						updateChunk(current.x - CHUNK_SIZE, current.y);	// left
+					}
 
 					// add neighbors to queue if they haven't been processed
 					// right
@@ -163,9 +173,6 @@ namespace Game {
 					}
 				}
 			}
-
-			bool dummy = false;
-			Chunk::updateAllChunks(dummy);
 		}
 	}
 
