@@ -18,45 +18,12 @@
 #define TERRAIN_DISTANCE 8	// how many chunks from camera to generate (1 = neighbors, 2 = neighbor's neighbors, etc.)
 
 namespace Game {
-	// update chunks, either all or by neighbor
-	// if by neighbor, starts with chunk the camera is in
-	// doneUpdating changes to true when chunk updating is finished
-	std::thread* updateChunks(bool byNeighbor, bool& doneUpdating) {
-		static bool running = false;	// make sure only one chunk loader is running at a time
 
-		if (running) {
-			std::cerr << "Chunk loader is already running." << std::endl;
-			return nullptr;
-		}
+	std::queue<uint32_t> chunksToUpdate;	// a queue of chunks (described by index) to update
 
-		running = true;
-		doneUpdating = false;
-
-		if (byNeighbor) {
-			// get chunk based on cam position
-			glm::vec3 camPos = Camera::getActiveCam()->getPosition();
-			int chunkX, chunkZ;
-			Chunk::getChunkPosition(camPos.x, camPos.z, chunkX, chunkZ);
-			uint32_t chunkIndex = Chunk::getChunkIndex(chunkX, chunkZ);
-			if (Chunk::chunkList.find(chunkIndex) == Chunk::chunkList.end()) {
-				std::cerr << "Active cam is in non-existant chunk. Updating all chunks." << std::endl;
-				// update all chunks instead
-				return new std::thread(Chunk::updateAllChunks, doneUpdating);
-			}
-
-			Chunk* starter = Chunk::chunkList[chunkIndex];
-			return new std::thread(Chunk::updateChunksByNeighbor, starter, doneUpdating);
-		}
-		else {
-			return new std::thread(Chunk::updateAllChunks, doneUpdating);
-		}
-
-		running = false;
-	}
-
-	// update single chunk, the one containing global position (x, ~ ,z)
-	// doesn't create a separate thread
+	// adds this chunk to the chunk updater's queue
 	void updateChunk(int x, int z) {
+		// make sure chunk exists
 		int chunkX, chunkZ;
 		Chunk::getChunkPosition(x, z, chunkX, chunkZ);
 		int chunkIndex = Chunk::getChunkIndex(chunkX, chunkZ);
@@ -64,12 +31,13 @@ namespace Game {
 			return;
 		}
 
-		// update chunk
-		Chunk::chunkList[chunkIndex]->updateData();
+		// add to queue
+		chunksToUpdate.push(chunkIndex);
 	}
 
 	// update chunks based on block
-	// same as updateChunk, but also updates neighbor chunks for edge and corner blocks
+	// updates neighbor chunks for edge and corner blocks
+	// doesn't create new thread
 	void updateBlock(int x, int z) {
 		// update current chunk
 		updateChunk(x, z);
@@ -99,6 +67,32 @@ namespace Game {
 			// back edge
 			updateChunk(x, z + 1);
 		}
+	}
+
+	// helper for updateChunks()
+	void updateChunksHelper(GLFWwindow* window) {
+		// loop while window is open
+		while (!glfwWindowShouldClose(window)) {
+			// loop through queue and update
+			while (!chunksToUpdate.empty()) {
+				// get chunk index from queue
+				uint32_t index = chunksToUpdate.front();
+				chunksToUpdate.pop();
+
+				// make sure chunk exists
+				if (Chunk::chunkList.find(index) == Chunk::chunkList.end()) {
+					continue;
+				}
+
+				// update chunk
+				Chunk::chunkList[index]->updateData();
+			}
+		}
+	}
+
+	// creates a thread continuously loops through chunks queue and updates
+	std::thread* updateChunks(GLFWwindow* window) {
+		return new std::thread(updateChunksHelper, window);
 	}
 
 	// generate the chunk at (x, z) if it doesn't already exist
@@ -272,26 +266,14 @@ namespace Game {
 
 		Camera::getActiveCam()->translate(glm::vec3(0, 15, 0));
 
-		// start terrain generation
+		// start threads for terrain gen and chunk updating
 		std::thread* terrainGenThread = genTerrain(window);
-
-		bool chunkLoaderDone = false;	// used to join chunk loading threads once loading finishes
-		std::thread* chunkLoader = nullptr;		// keep track of the chunk loading thread
-
-		// initial chunk load
-		//chunkLoader = Game::updateChunks(true, chunkLoaderDone);
+		std::thread* chunkUpdateThread = updateChunks(window);
 
 		// keep running until window should close (same as rendering loop)
 		while (!glfwWindowShouldClose(window)) {
 			float loopStartTime = glfwGetTime();	// used to update delta
 			processKeys(window, delta);
-
-			// join and delete chunkLoader thread if needed
-			if (chunkLoaderDone) {
-				chunkLoader->join();
-				delete chunkLoader;
-				chunkLoaderDone = false;
-			}
 
 			delta = glfwGetTime() - loopStartTime;
 		}
@@ -299,6 +281,10 @@ namespace Game {
 		// kill terrain gen thread
 		terrainGenThread->join();
 		delete terrainGenThread;
+
+		// kill chunk updater
+		chunkUpdateThread->join();
+		delete chunkUpdateThread;
 	}
 }
 
