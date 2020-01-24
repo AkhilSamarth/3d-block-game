@@ -35,12 +35,31 @@ namespace Game {
 		chunksToUpdate.push(chunkIndex);
 	}
 
+	// update chunk function for immediate chunk updates (done in this thread)
+	// warning: does not guarantee update (i.e. if updateData is locked by another thread)
+	// if update fails, adds to queue
+	void updateChunkQuickly(int x, int z) {
+		// make sure chunk exists
+		int chunkX, chunkZ;
+		Chunk::getChunkPosition(x, z, chunkX, chunkZ);
+		int chunkIndex = Chunk::getChunkIndex(chunkX, chunkZ);
+		if (Chunk::chunkList.find(chunkIndex) == Chunk::chunkList.end()) {
+			return;
+		}
+
+		// attempt update
+		if (!Chunk::chunkList[chunkIndex]->updateData()) {
+			// add to queue
+			chunksToUpdate.push(chunkIndex);
+		}
+	}
+
 	// update chunks based on block
 	// updates neighbor chunks for edge and corner blocks
 	// doesn't create new thread
 	void updateBlock(int x, int z) {
 		// update current chunk
-		updateChunk(x, z);
+		updateChunkQuickly(x, z);
 
 		// calculate local block position
 		int chunkX, chunkZ;
@@ -52,20 +71,20 @@ namespace Game {
 		// check x
 		if (localX == 0) {
 			// left edge
-			updateChunk(x - 1, z);
+			updateChunkQuickly(x - 1, z);
 		}
 		else if (localX == CHUNK_SIZE - 1) {
 			// right edge
-			updateChunk(x + 1, z);
+			updateChunkQuickly(x + 1, z);
 		}
 		// check z
 		if (localZ == 0) {
 			// front edge
-			updateChunk(x, z - 1);
+			updateChunkQuickly(x, z - 1);
 		}
 		else if (localZ == CHUNK_SIZE - 1) {
 			// back edge
-			updateChunk(x, z + 1);
+			updateChunkQuickly(x, z + 1);
 		}
 	}
 
@@ -84,8 +103,11 @@ namespace Game {
 					continue;
 				}
 
-				// update chunk
-				Chunk::chunkList[index]->updateData();
+				// attempt to update chunk
+				if (!Chunk::chunkList[index]->updateData()) {
+					// if update was unsuccessful, send to back of queue to try again
+					chunksToUpdate.push(index);
+				}
 			}
 		}
 	}

@@ -220,7 +220,7 @@ bool Chunk::checkBlock(int x, int y, int z) {
 	return chunkList[chunkIndex]->blocks[x - chunkX][y][z - chunkZ] != nullptr;
 }
 
-Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Vertex>()) {
+Chunk::Chunk(glm::ivec2 pos) : blocks(), neighborChunks(), verts(std::vector<Vertex>()), dataUpdated(false), dataUpdating(false), bufferUpdated(false), bufferCreated(false) {
 	// check position
 	if (pos.x % CHUNK_SIZE != 0 || pos.y % CHUNK_SIZE != 0) {
 		std::cerr << "Invalid chunk position (x: " << pos.x << ", z: " << pos.y << ") given!" << std::endl;
@@ -562,11 +562,17 @@ void Chunk::addNeighbor(Chunk* chunk) {
 	}
 }
 
-void Chunk::updateData() {
+bool Chunk::updateData() {
 	// don't do anything if update isn't needed
 	if (dataUpdated) {
-		return;
+		return true;
 	}
+
+	// only allow one update at a time
+	if (dataUpdating) {
+		return false;
+	}
+	dataUpdating = true;
 
 	// call the update functions
 	updateBlockFaces();
@@ -574,11 +580,13 @@ void Chunk::updateData() {
 
 	// if verts is empty, no need to do anything with this chunk
 	if (verts.empty()) {
-		return;
+		return true;
 	}
 
-	// set update flag
 	dataUpdated = true;
+	dataUpdating = false;
+
+	return true;
 }
 
 bool Chunk::isDataUpdated() {
